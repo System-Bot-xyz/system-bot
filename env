@@ -1,38 +1,43 @@
 #Bot Specification
-TOKEN=MTE5Nzk3NDA2NTUxMjcxNDI5MA.GAssuk.NjcYU4YBvHmoZK8DlbA5jYUn05Nqg8cMHqJuLU #Discord Bot Token
-CLIENT_ID=1197974065512714290 #Discord Bot Client ID
-CLIENT_SECRET=-Gn8f2PLyS3qxTRZpbrwSCjsSmM-iW1s #Discord Bot Secret Token
+TOKEN=discord-bot-token #Discord Bot Token
+CLIENT_ID=discord-bot-clientid #Discord Bot Client ID
+CLIENT_SECRET=discord-bot-client-secret #Discord Bot Secret Token
 PREFIX=! #Discord Bot prefix
 
 #Websocket Specification
-DOMAIN=localhost 
-PORT=3000
-OAUTH2_URL=https://discord.com/api/oauth2/authorize?client_id=1197974065512714290&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fauth%2Fcallback&scope=identify+guilds+gdm.join+email+guilds.join+connections
-CALLBACK_URL=https://localhost:3000/callback
-SCOPE=identify guilds email profile
+DOMAIN=localhost #webdomain
+PORT=3000 #port
+REDIRECT_URL= #redirect oauth2
+SCOPE= #what oauth2 from a user scoped
 
-#Wich database will be using
-DATABASE=mysql #mongodb, mysql
+#Wich database will be used
+DATABASE_CHOOSE= #mongodb, mysql, sql-server
 
 #Mongoose Specification
-MONGODBURL=mongodb+srv://system:xykrSZpy2LGWRVjp@system-playgs.8vh6is2.mongodb.net/?retryWrites=true&w=majority #mongodb/mongoose connection link
+MONGODBURL= #mongodb/mongoose connection link
 
 #MySQL Specification
-MYSQL_HOSTNAME=localhost #hostname ip(192.168.0.1)/localhost
-MYSQL_DATABASE=SystemBot #database name
-MYSQL_USERNAME=SystemBot  #username mysql
+MYSQL_HOSTNAME= #hostname ip(192.168.0.1)/localhost
+MYSQL_DATABASE= #database name
+MYSQL_USERNAME=  #username mysql
 MYSQL_PASSWORD= #password of mysql user
 MYSQL_PORT= #port of the mysql server
 
 #SQL Server Specification
-SQL_SERVER_HOST=localhost #hostname ip(192.168.0.1)/localhost
-SQL_SERVER_DATABASE=SystemBot #database name
-SQL_SERVER_USER=SystemBot  #username sql server
-SQL_SERVER_PASSWORD=SystemBot #password of sql server user
+SQL_SERVER_HOST= #hostname ip(192.168.0.1)/localhost
+SQL_SERVER_DATABASE= #database name
+SQL_SERVER_USER=  #username sql server
+SQL_SERVER_PASSWORD= #password of sql server user
 SQL_SERVER_PORT= #port of the sql server
 
+#API`s
+TOPGG_API_KEY= #Top.GG API key
+BARDAI_RAPIDAPI_KEY= #BardAI key
+CODZZ_RAPIDAPI_KEY= #QR-Codes key
+REMOVEBG_API_KEY= #RemoveBG API key
+
 #Development
-DEV_ID=335228120816943114 #Developer Discord ID
+DEV_ID= #Developer Discord ID
 DEV_BUG_REPORT= #Developer Bug Report Channel.
 
 #Creator Guild Specification
@@ -43,11 +48,18 @@ TICKET_LOG=
 DISCORD_LOG=
 WISHES_CHANNEL=
 
-#API`s
-TOPGG_API_KEY= #Top.GG API key
-BARDAI_RAPIDAPI_KEY= #BardAI key
-CODZZ_RAPIDAPI_KEY= #QR-Codes key
-REMOVEBG_API_KEY= #RemoveBG API key
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -42,7 +42,7 @@ module.exports = {
             num++;
         });
 
-        string = string.replace('undefined', 'N/A');
+        string = string.replace('N/A');
         await sendMessage(`**Total Invite Leaderboard: \n\n${string}`);
     }
 };

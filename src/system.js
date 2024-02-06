@@ -121,6 +121,92 @@ client.on(Events.MessageCreate, async (message) => {
   }
 });
 
+//Welcome Message System
+const welcomeSetupSchema = require("./Schemas/welcomeSchema");
+client.on(Events.GuildMemberAdd, async member => {
+  try {
+    const guildId = member.guild.id;
+    const existingSetup = await welcomeSetupSchema.findOne({ guildId });
+    if(!existingSetup){
+      return;
+    }
+    const channel = member.guild.channels.cache.get(existingSetup.channelId);
+    if(!channel){
+      console.error('error', error);
+      return;
+    }
+    let messageContent = existingSetup.welcomeMessage
+      .replace('{SERVER_MEMBER}', interaction.guild.memberCount)
+      .replace('{USER_MENTION}', `<@${interaction.user.id}>`)
+      .replace('{USER_NAME}', interaction.user.username)
+      .replace('{SERVER_NAME}', interaction.guild.name);
+
+    if(existingSetup.useEmbed){
+      const embed = new EmbedBuilder()
+        .setColor("Random")
+        .setTitle('Welcome to the **{SERVER_NAME}** server!')
+        .setDescription(messageContent)
+        .setThumbnail(userAvatar)
+        .setFooter({ text: interaction.guild.name })
+        .setTimestamp();
+
+      await channel.send({ content: `<@${member.id}>`, embeds: [embed] });
+    } else {
+      await channel.send(messageContent);
+    }
+  } catch (error) {
+    console.error('error', error);
+  }
+});
+
+//Level System
+const Level = require("./Schemas/levelSchema");
+client.on(Events.MessageCreate, async message => {
+  try {
+    const guildId = message.guild.id;
+    const existingLevel = await Level.findOne({ guildId });
+    if(!existingLevel) return;
+
+    const userId = message.author.id;
+
+    existingLevel.userXp += 4;
+    await existingLevel.save();
+
+    if(existingLevel.userXp >= 100){
+      existingLevel.userXp -= 100;
+      existingLevel.userLevel += 1;
+
+      const guild = client.guilds.cache.get(guildId);
+      const channel = guild.channels.cache.get(existingLevel.channelId);
+
+      let levelUpMessage = existingLevel.messages.length > 0 ? existingLevel.messages[0].content
+        .replace('{userName}', message.author.username)
+        .replace('{userMention}', `<@${userId}>`) 
+        .replace('{userLevel}', existingLevel.userLevel) : `Congratulations ${message.author}! You leveled up to level ${existingLevel.userLevel}!`;
+        
+      if(existingLevel.useEmbed){
+        const userAvatar = message.author.displayAvatarURL({ format: 'png', dynamic: true });
+        const serverName = message.guild.name;
+
+        const embed = new EmbedBuilder()
+          .setColor("Random")
+          .setTitle(serverName)
+          .setDescription(levelUpMessage)
+          .setThumbnail(userAvatar)
+          .setFooter({ text: serverName })
+          .setTimestamp();
+
+        channel.send({ embeds: [embed] });
+      } else {
+        channel.send(levelUpMessage);
+      }
+    }
+    await existingLevel.save();
+  } catch (error) {
+    console.error('error', error);
+  }
+})
+
 // Ticket System
 const ticketSchema = require("./Schemas/ticketSchema.js");
 client.on(Events.InteractionCreate, async (interaction) => {

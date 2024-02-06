@@ -3,34 +3,6 @@
 <img src="https://img.shields.io/badge/HTML-black?style=for-the-badge&logo=HTML5&logoColor=E34F26"/>
 
 ```
-npm i discord.js
-npm i discord-html-transcripts
-npm i discord-command-builder
-npm i node-fetch
-npm i mongoose
-npm i mysql
-npm i sqlite
-npm i sequlizedb
-npm i express
-npm i dotenv
-npm i stream
-npm i axios
-npm i tinyurl
-npm i puppeteer
-npm i 
-npm i 
-npm i 
-npm i 
-npm i 
-npm i 
-npm i 
-npm i 
-npm i 
-npm i 
-npm i 
-npm i 
-npm i 
-npm i 
 npm i 
 ```
 

@@ -2,8 +2,14 @@
 <img src="https://img.shields.io/badge/HTML-black?style=for-the-badge&logo=HTML5&logoColor=E34F26"/>
 <img src="https://img.shields.io/badge/CSS-black?style=for-the-badge&logo=HTML5&logoColor=E34F26"/>
 
+# Information
 ```
-npm i 
+The .txt files are planned files wich will be soon added.
+```
+
+# Packages
+```
+npm i
 ```
 
 # Replacing
@@ -20,3 +26,4 @@ USERNAME
 PASSWORD
 PORT
 ```
+

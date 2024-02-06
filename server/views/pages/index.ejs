@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- Meta Tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- CSS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        
+        <!-- Fonts -->
+        <script src="https://kit.fontawesome.com/cbf5ee59c8.js" crossorigin="anonymous"></script>
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" type="text/css" href="css/global.css" />
+        <link rel="stylesheet" type="text/css" href="css/pages/home.css" />
+
+        <!-- Link Tags -->
+        <link rel="shortcut icon" href="img/logo.png" type="image/x-icon">
+        <!-- Title -->
+        <title><%= title %></title>
+        
+        <!-- Scripts -->
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+        <script src="https://embed.twitch.tv/embed/v1.js"></script>
+
+        <!-- Custom Scripts -->
+        <script src="js/script.js" defer></script>
+    </head>
+    <body>
+        <!--Navbar-->
+        <div class="navbar">
+            <div class="menu-mobile">
+                <a href="/">
+                    <div class="logo">
+                        <img src="img/logo.png" alt="Server logo" class="logo-img">
+                        <h3 class="server-name">Example Name</h3>
+                    </div>
+                </a>
+                <div class="hamburger">
+                    <i class="fa-solid fa-bars"></i>
+                </div>
+            </div>
+            <div class="links">
+                <a href="/" class="link active">Home</a>
+                <a href="/news" class="link">News</a>
+                <a href="/commands" class="link">Commands</a>
+                <div class="dropdown">
+                    <a href="/stats" class="link dropdown-toggle" id="commandsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Stats</a>
+                    <div class="dropdown-menu" aria-labelledby="commandsDropdown">
+                        <a class="dropdown-item" href="/performance">Performance</a>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <a href="/about" class="link dropdown-toggle" id="statsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">About</a>
+                    <div class="dropdown-menu" aria-labelledby="statsDropdown">
+                        <a class="dropdown-item" href="/team">Team</a>
+                        <a class="dropdown-item" href="/contact">Contact</a>
+                    </div>
+                </div>
+                <a href="/help-panel" class="link">Support</a>
+                <a href="/callback" class="link">Login with Discord</a>
+                <div class="dropdown">
+                    <a href="/dashboard" class="link dropdown-toggle" id="statsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dashboard</a>
+                    <div class="dropdown-menu" aria-labelledby="statsDropdown">
+                        <a class="dropdown-item" href="/profile">Profile</a>
+                        <a class="dropdown-item" href="/profile/settings">Settings</a>
+                        <a class="dropdown-item" href="/logout">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Header-->
+        <section id="header">
+            <div class="content">
+                <div class="left">
+                    <div class="server-name">
+                        <p>Management Discord Bot</p>
+                        <h1 class="minecraft-server-ip">System Bot</h1>
+                    </div>
+                    <p class="server-description">
+                        The only one discord bot with every feature for free wich other bots give only for payments.
+                        <br><br>Invite and use this bot!
+                    </p>
+                    <div class="buttons">
+                        <a href="/invite"><button class="copy-ip">Invite</button></a>
+                        <a href="/news"><button class="how-to-join">Show more</button></a>
+                    </div>
+                    <p class="ip-copied">You get redirected to the invite!</p>
+                </div>
+                <div class="right">
+                    <img src="img/logo.png" alt="Server logo" class="logo-img logo-img-header">
+                    <div class="stats">
+                        <div class="stat">
+                            <div class="icon">
+                                <i class="fa-brands fa-discord"></i>
+                            </div>
+                            <div class="texts">
+                                <h5 class="stat-title">Discord server</h5>
+                                <p><span class="stat-number discord-online-users">None</span> users online</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="idea-implementation">
+            <h1 class="idea-implementation-title">Idea & Implementation</h1>
+            <div class="idea-implementation-div">
+                <p class="idea-implementation-text">
+                    Dieser discord bot entstand spontan im Kopf und wurde direkt angefangen diesen Bot um zu setzen. 
+                    System Bot wird alle Features Gratis haben, welche bei den meisten Discord Bots kostenpflichtig sind. 
+                    Wir wollen das jeder die möglichkeit hat seinen Discord Server so zu verwalten und einzurichten das er 
+                    genau nach Anforderung aussieht und funktioniert, ohne mehrere Discord Bots auf dem Discord Server zu haben.
+                </p>
+                <img class="idea-implementation-image" src="img/idea-implementation.png" alt="Idea & Implementation Picture">
+            </div>
+        </section>
+        <!--Discord-->
+        <section id="discord">
+            <div class="content">
+                <h2 class="section-title">Have a <span>problem</span> or want to get in touch with others? <br> Join our <span>Discord!</span></h2>
+                <a href="#" class="discord-link"><button class="join-discord">Join Discord</button></a>
+            </div>
+        </section>
+        <section class="categories">
+            <h1 class="categories-title">Command Categories</h1>
+            <div class="category">
+                <h2 class="category-title">AI</h2>
+                <p class="category-description">The System Bot AI is used to interact with the System Bot.</p>
+            </div>
+            <div class="category">
+                <h2 class="category-title">API</h2>
+                <p class="category-description">The System Bot API is used to interact with the System Bot.</p>
+            </div>
+            <div class="category">
+                <h2 class="category-title">Community</h2>
+                <p class="category-description">The System Bot Community is used to interact with the System Bot.</p>
+            </div>
+            <div class="category">
+                <h2 class="category-title">Economy</h2>
+                <p class="category-description">The System Bot Economy is used to interact with the System Bot.</p>
+            </div>
+            <div class="category">
+                <h2 class="category-title">Games</h2>
+                <p class="category-description">The System Bot Games is used to interact with the System Bot.</p>
+            </div>
+            <div class="category">
+                <h2 class="category-title">Generator</h2>
+                <p class="category-description">The System Bot Generator is used to interact with the System Bot.</p>
+            </div>
+            <div class="category">
+                <h2 class="category-title">Giveaway</h2>
+                <p class="category-description">The System Bot Giveaway is used to interact with the System Bot.</p>
+            </div>
+            <div class="category">
+                <h2 class="category-title">Informationen</h2>
+                <p class="category-description">The System Bot Informationen is used to interact with the System Bot.</p>
+            </div>
+            <div class="category">
+                <h2 class="category-title">Minecraft</h2>
+                <p class="category-description">The System Bot Minecraft is used to interact with the System Bot.</p>
+            </div>
+            <div class="category">
+                <h2 class="category-title">Moderation</h2>
+                <p class="category-description">The System Bot Moderation is used to interact with the System Bot.</p>
+            </div>
+            <div class="category">
+                <h2 class="category-title">Reports</h2>
+                <p class="category-description">The System Bot Reports is used to interact with the System Bot.</p>
+            </div>
+            <div class="category">
+                <h2 class="category-title">Tickets</h2>
+                <p class="category-description">The System Bot Tickets is used to interact with the System Bot.</p>
+            </div>
+            <div class="category">
+                <h2 class="category-title">Utility</h2>
+                <p class="category-description">The System Bot Utility is used to interact with the System Bot.</p>
+            </div>
+        </section>
+        <!--Discord-->
+        <section id="discord">
+            <div class="content">
+                <h2 class="section-title">Have a <span>problem</span> or want to get in touch with others? <br> Join our <span>Discord!</span></h2>
+                <a href="#" class="discord-link"><button class="join-discord">Join Discord</button></a>
+            </div>
+        </section>
+        <section class="reviews">
+            <h2 class="review-title">Reviews</h2>
+            <div class="review-slider">
+                <div class="reviewer">
+                    <p class="reviewer-text">Der Discord Bot ist fantastisch und er bietet alles was man benötigt um einen Discord Server komplett ein zu richten.</p>
+                    <img class="reviewer-image" src="img/reviews.png" alt="Reviewer Picture">
+                    <h5 class="reviewer-name">John Doe</h5>
+                    <p class="reviewer-job">Social Media Agent</p>
+                </div>
+                <div class="reviewer">
+                    <p class="reviewer-text">Der Discord Bot ist fantastisch und er bietet alles was man benötigt um einen Discord Server komplett ein zu richten.</p>
+                    <img class="reviewer-image" src="img/reviews.png" alt="Reviewer Picture">
+                    <h5 class="reviewer-name">Knabi Croßa</h5>
+                    <p class="reviewer-job">Developer</p>
+                </div>
+                <div class="reviewer">
+                    <p class="reviewer-text">Der Discord Bot ist fantastisch und er bietet alles was man benötigt um einen Discord Server komplett ein zu richten.</p>
+                    <img class="reviewer-image" src="img/reviews.png" alt="Reviewer Picture">
+                    <h5 class="reviewer-name">Leon Rusky</h5>
+                    <p class="reviewer-job">CEO | DICG Holding</p>
+                </div>
+                <div class="reviewer">
+                    <p class="reviewer-text">Der Discord Bot ist fantastisch und er bietet alles was man benötigt um einen Discord Server komplett ein zu richten.</p>
+                    <img class="reviewer-image" src="img/reviews.png" alt="Reviewer Picture">
+                    <h5 class="reviewer-name">Tim Hauke</h5>
+                    <p class="reviewer-job">CMO | DICG Holding</p>
+                </div>
+            </div>
+        </section>
+        <!--Discord-->
+        <section id="discord">
+            <div class="content">
+                <h2 class="section-title">Have a <span>problem</span> or want to get in touch with others? <br> Join our <span>Discord!</span></h2>
+                <a href="#" class="discord-link"><button class="join-discord">Join Discord</button></a>
+            </div>
+        </section>
+        <section class="twitch-embedded">
+            <div class="twitch-live-embed">
+                <div id="twitch-embed"></div>
+            </div>
+        </section>
+        <div class="banner">
+            <img class="banner-discord-image" src="img/discord-banner.png" alt="Discord Banner">
+            <h2 class="banner-discord-title">Discord</h2>
+            <p class="banner-discord-text">Join the twitch channel from VectoDE, on his channel come things about the discord bot.</p>
+        </div>
+        <section class="widgets">
+            <div class="discord-widget">
+                <iframe src="https://discord.com/widget?id=1200557940277530704&theme=dark" width="350" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
+            </div>
+        </section>
+
+        <%- include('partials/footer') %>
+        
+        <script type="text/javascript">
+            var embed = new Twitch.Embed("twitch-embed", {
+              width: 854,
+              height: 480,
+              channel: "vectode",
+              layout: "video",
+              autoplay: false,
+              // Only needed if this page is going to be embedded on other websites
+              parent: ["embed.example.com", "othersite.example.com"]
+            });
+      
+            embed.addEventListener(Twitch.Embed.VIDEO_READY, () => {
+              var player = embed.getPlayer();
+              player.play();
+            });
+
+            const reviewers = document.querySelectorAll('.reviewer');
+            let activeReviewer = 0;
+                    
+            setInterval(() => {
+              reviewers[activeReviewer].classList.remove('active');
+              activeReviewer = (activeReviewer + 1) % reviewers.length;
+              reviewers[activeReviewer].classList.add('active');
+            }, 3000);
+            
+            const leftArrow = document.createElement('div');
+            leftArrow.classList.add('arrow', 'left');
+            leftArrow.addEventListener('click', () => {
+              reviewers[activeReviewer].classList.remove('active');
+              activeReviewer = (activeReviewer - 1 + reviewers.length) % reviewers.length;
+              reviewers[activeReviewer].classList.add('active');
+            });
+            
+            const rightArrow = document.createElement('div');
+            rightArrow.classList.add('arrow', 'right');
+            rightArrow.addEventListener('click', () => {
+              reviewers[activeReviewer].classList.remove('active');
+              activeReviewer = (activeReviewer + 1) % reviewers.length;
+              reviewers[activeReviewer].classList.add('active');
+            });
+            
+            document.querySelector('.review-slider').appendChild(leftArrow);
+            document.querySelector('.review-slider').appendChild(rightArrow);
+            
+            reviewers[activeReviewer].classList.add('active');
+        </script>
+    </body>
+</html>

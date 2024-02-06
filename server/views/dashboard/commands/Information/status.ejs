@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Status | System Bot</title>
+    </head>
+    <body>
+        <h1>Bot Status</h1>
+        <form>
+            <label for="activity">Activity:</label>
+            <select id="activity" name="activity">
+                <option value="listening">Listening</option>
+                <option value="streaming">Streaming</option>
+                <option value="playing">Playing</option>
+                <option value="watching">Watching</option>
+                <option value="competing">Competing</option>
+            </select>
+            <br><br>
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name"><br><br>
+            <label for="url">URL:</label>
+            <input type="text" id="url" name="url"><br><br>
+            <label for="status">Status:</label>
+            <select id="status" name="status">
+                <option value="online">Online</option>
+                <option value="idle">Idle</option>
+                <option value="dnd">Do Not Disturb</option>
+                <option value="invisible">Invisible</option>
+            </select>
+            <br><br>
+            <input type="submit" value="Set Status">
+        </form>
+        <script>
+            const form = document.querySelector('form');
+            form.addEventListener('submit', async (event) => {
+                event.preventDefault();
+                const activity = form.activity.value;
+                const name = form.name.value;
+                const url = form.url.value;
+                const status = form.status.value;
+                const response = await fetch('/status', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        activity,
+                        name,
+                        url,
+                        status
+                    })
+                });
+                const result = await response.json();
+                alert(result.message);
+            });
+        </script>
+    </body>
+</html>

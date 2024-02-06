@@ -1,0 +1,52 @@
+<section class="twitch-embedded">
+    <div class="twitch-live-embed">
+        <div id="twitch-embed"></div>
+    </div>
+</section>
+
+<script type="text/javascript">
+    var embed = new Twitch.Embed("twitch-embed", {
+      width: 854,
+      height: 480,
+      channel: "vectode",
+      layout: "video",
+      autoplay: false,
+      // Only needed if this page is going to be embedded on other websites
+      parent: ["embed.example.com", "othersite.example.com"]
+    });
+
+    embed.addEventListener(Twitch.Embed.VIDEO_READY, () => {
+      var player = embed.getPlayer();
+      player.play();
+    });
+
+    const reviewers = document.querySelectorAll('.reviewer');
+    let activeReviewer = 0;
+            
+    setInterval(() => {
+      reviewers[activeReviewer].classList.remove('active');
+      activeReviewer = (activeReviewer + 1) % reviewers.length;
+      reviewers[activeReviewer].classList.add('active');
+    }, 3000);
+    
+    const leftArrow = document.createElement('div');
+    leftArrow.classList.add('arrow', 'left');
+    leftArrow.addEventListener('click', () => {
+      reviewers[activeReviewer].classList.remove('active');
+      activeReviewer = (activeReviewer - 1 + reviewers.length) % reviewers.length;
+      reviewers[activeReviewer].classList.add('active');
+    });
+    
+    const rightArrow = document.createElement('div');
+    rightArrow.classList.add('arrow', 'right');
+    rightArrow.addEventListener('click', () => {
+      reviewers[activeReviewer].classList.remove('active');
+      activeReviewer = (activeReviewer + 1) % reviewers.length;
+      reviewers[activeReviewer].classList.add('active');
+    });
+    
+    document.querySelector('.review-slider').appendChild(leftArrow);
+    document.querySelector('.review-slider').appendChild(rightArrow);
+    
+    reviewers[activeReviewer].classList.add('active');
+</script>

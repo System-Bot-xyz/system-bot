@@ -28,7 +28,7 @@ module.exports = {
 
         const res = new EmbedBuilder()
             .setColor(0x5fb041)
-            .setFooter({ text: 'Ulix | ulixserver.de © 2023 | Alle rechte vorbehalten.' });
+            .setFooter(interaction.user.username, interaction.user.displayAvatarURL({ dynamic: true }));
 
         if(target) {
             let i = 0;

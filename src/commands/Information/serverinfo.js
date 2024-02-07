@@ -2,7 +2,7 @@ const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('serverinfo')
+        .setName('server-info')
         .setDescription('This gets some server info.'),
 
     async execute(interaction) {

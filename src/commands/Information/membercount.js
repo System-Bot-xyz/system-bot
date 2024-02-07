@@ -42,7 +42,7 @@ module.exports = {
                 },
            ])
            .setThumbnail(client.user.displayAvatarURL())
-           .setFooter({ text: '2022-2023 © PlayGS Netzwerk | Alle rechte vorbehalten.' },interaction.user.username, interaction.user.displayAvatarURL({ dynamic: true }))
+           .setFooter(interaction.user.username, interaction.user.displayAvatarURL({ dynamic: true }))
 
            await interaction.reply({ embeds: [embed] });
     }

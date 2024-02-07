@@ -2,8 +2,6 @@
 <img src="https://img.shields.io/badge/HTML-black?style=for-the-badge&logo=HTML5&logoColor=E34F26"/>
 <img src="https://img.shields.io/badge/CSS-black?style=for-the-badge&logo=HTML5&logoColor=E34F26"/>
 
-<img src="https://github.com/actions/runner-images/releases/tag/ubuntu22%2F20240204.1"/>
-
 # Information
 ```
 The .txt files are planned files wich will be soon added.

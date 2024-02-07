@@ -31,7 +31,7 @@ const csrf = require('./utils/csrf');
 const domain = process.env.DOMAIN;
 const clientId = process.env.CLIENT_ID;
 const clientSecret = process.env.CLIENT_SECRET;
-const redirectUri = process.env.CALLBACK_URL;
+const redirectUri = process.env.REDIRECT_URL;
 const scope = process.env.SCOPE;
 const port = process.env.PORT;
 

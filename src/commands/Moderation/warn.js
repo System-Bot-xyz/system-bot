@@ -25,7 +25,7 @@ module.exports = {
                 { name: 'Reason', value: `${reason}` },
                 { name: 'Timestamp', value: `${new Date().toLocaleString()}` }
             )
-            .setFooter({ text: '2022-2023 © PlayGS Netzwerk | Alle rechte vorbehalten.' },interaction.user.username, interaction.user.displayAvatarURL({ dynamic: true }))
+            .setFooter(interaction.user.username, interaction.user.displayAvatarURL({ dynamic: true }))
             .setTimestamp();
 
         const embed = new EmbedBuilder()
@@ -38,7 +38,7 @@ module.exports = {
                 { name: 'Reason', value: `${reason}` },
                 { name: 'Timestamp', value: `${new Date().toLocaleString()}` }
             )
-            .setFooter({ text: '2022-2023 © PlayGS Netzwerk | Alle rechte vorbehalten.' },interaction.user.username, interaction.user.displayAvatarURL({ dynamic: true }))
+            .setFooter(interaction.user.username, interaction.user.displayAvatarURL({ dynamic: true }))
             .setTimestamp();
 
         await interaction.reply({ embeds: [embed], ephemeral: true });

@@ -2,7 +2,7 @@ const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('inviteinfo')
+        .setName('invite-info')
         .setDescription('Get info on the invites server.')
         .addStringOption(option => option.setName('invite').setDescription('The invite you want to check.').setRequired(true)),
 

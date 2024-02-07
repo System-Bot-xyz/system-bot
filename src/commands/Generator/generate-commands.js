@@ -8,7 +8,7 @@ module.exports = {
 
     async execute(interaction) {
         createBuilder({ interaction: interaction, path: './cache/' }).catch(async err => {
-            return await interaction.reply({ content: `Da war ein Fehler beim ausführen des Kommandos.`, ephemeral: true })
+            return await interaction.reply({ content: `There was an error.`, ephemeral: true })
         })
     }
 }

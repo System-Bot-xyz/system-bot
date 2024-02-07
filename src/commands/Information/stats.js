@@ -19,7 +19,7 @@ module.exports = {
                 { name: 'Users', value: `${client.users.cache.size}`, inline: true },
                 { name: 'Channels', value: `${client.channels.cache.size}`, inline: true }
             )
-            .setFooter({ text: '2022-2023 © PlayGS Netzwerk | Alle rechte vorbehalten.' }, interaction.user.username, interaction.user.displayAvatarURL({ dynamic: true }))
+            .setFooter(interaction.user.username, interaction.user.displayAvatarURL({ dynamic: true }))
             .setTimestamp();
 
         await interaction.reply({ embeds: [embed] });

@@ -19,7 +19,7 @@ module.exports = {
                 .addComponents(
                     new ButtonBuilder()
                     .setCustomId('replymsgDelete')
-                    .setLabel('')
+                    .setLabel('❌')
                     .setStyle(ButtonStyle.Danger)
                 );
 

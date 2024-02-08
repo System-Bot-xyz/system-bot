@@ -9,7 +9,15 @@ The .txt files are planned files wich will be soon added.
 
 # Packages
 ```
-npm i
+axios, bcrypt, bootstrap, btoa, canvafy, certbot, 
+cookie-parser, cors, csurf, discord-command-builder, 
+discord-gamecord, discord-html-transcripts, 
+discord-interactions, discord.js, dotenv, ejs, express, 
+express-session, helmet, mariadb, mongoose, morgan, 
+mssql, mysql, mysql-server, node-fetch, openssl, 
+passport, passport-discord, puppeteer, querystring, 
+quickchart-js, request, rss-parser, stream, tinyurl, 
+translate-google
 ```
 
 # Replacing

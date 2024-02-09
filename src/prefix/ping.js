@@ -1,13 +1,11 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const ms = require('ms');
 
 module.exports = {
-    data: new SlashCommandBuilder()
-        .setName('stats')
-        .setDescription('Stats Slash Command'),
+    name: 'ping',
+    description: 'Ping of the Bot.',
 
-    async execute(interaction, client) {
-
+    run: async(interaction, client, message, args) => {
         const embed = new EmbedBuilder()
             //.setAuthor(interaction.user.username, interaction.user.displayAvatarURL({ dynamic: true }))
             .setTitle('Bot Stats')
@@ -19,7 +17,7 @@ module.exports = {
                 { name: 'Users', value: `${client.users.cache.size}`, inline: true },
                 { name: 'Channels', value: `${client.channels.cache.size}`, inline: true }
             )
-            .setFooter({ text: interaction.user.displayAvatarURL({ dynamic: true }) })
+            .setFooter(interaction.user.username, interaction.user.displayAvatarURL({ dynamic: true }))
             .setTimestamp();
 
         await interaction.reply({ embeds: [embed] });

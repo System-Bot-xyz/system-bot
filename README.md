@@ -22,15 +22,19 @@ translate-google
 
 # Replacing
 ```
+--- Bot Information ---
 TOKEN
 CLIENT_ID
 CLIENT_SECRET
 PREFIX (optional)
+--- OAUTH2 Data ---
 DOMAIN
 PORT (optional)
 REDIRECT_URL
 SCOPE (optional)
+--- Database connection ---
 DATABASE_TYPE
+--- Database Data ---
 MONGODBURL
 MYSQL_HOSTNAME
 MYSQL_DATABASE
@@ -42,18 +46,27 @@ SQL_SERVER_DATABASE
 SQL_SERVER_USER
 SQL_SERVER_PASSWORD
 SQL_SERVER_PORT (optional)
+--- API Keys ---
 TOPGG_API_KEY
 BARDAI_RAPIDAPI_KEY
 CODZZ_RAPIDAPI_KEY
 REMOVEBG_API_KEY
+--- Developer Specification ---
 DEV_ID
 DEV_BUG_REPORT
+--- Creator Guild ---
 GUILD_ID
 ```
 
 # Features
 ```
-Welcome System, Giveaway System, 
+Welcome System, Giveaway System, Ticket System, Level System, Database System, 
+Api Request System, AI System, Developer Commands, Economy System, Minecraft Commands,
+Moderation System, Report System, Notification System, News System, Review System, 
+Translator System, Verification System, Vote System, Invites System, Events System, 
+Generator System, Thanks Message System, Mention System, YouTube Notification System,
+Music System, Voice Verification System, Join To Create System, Mod-Logging/Logging System,
+Prefix and Slashcommands, Website, Dashboard, Admin-Panel
 ```
 
 # Routes
@@ -84,8 +97,6 @@ Sites:
 -> /api/v3/documentation (if being released)
 
 URI: 
--> /api
--> /api/v1
 -> /api/users
 -> /api/users/list
 -> /api/users/count

@@ -332,7 +332,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
       await interaction.guild.channels
         .create({
-          name: `ticket-${interaction.user.username}`,
+          name: `ticket-${customId}-${interaction.user.username}`,
           parent: cate,
           type: ChannelType.GuildText,
           topic: `Ticket Informationen\n\nThema: ${customId}\nUsername: ${interaction.user.username} ID: ${interaction.user.id}`,
@@ -413,7 +413,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
       await interaction.guild.channels
         .create({
-          name: `ticket-${interaction.user.username}`,
+          name: `ticket-${customId}-${interaction.user.username}`,
           parent: cate,
           type: ChannelType.GuildText,
           topic: `Ticket Informationen\n\nThema: ${customId}\nUsername: ${interaction.user.username} ID: ${interaction.user.id}`,

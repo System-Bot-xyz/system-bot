@@ -63,8 +63,8 @@ module.exports = {
                     .setTitle('Ticket Panel')
                     .setDescription(`${msg}`)
                     .addFields(
-                        { name: 'Support Online Time', value: `${supportonlinetime}` },
-                        { name: 'Apply Duration', value: `${applyduration}` },
+                        { name: 'Support Online Time', value: `${supportonlinetime}`, inline: true },
+                        { name: 'Apply Duration', value: `${applyduration}`, inline: true },
                     )
 
                 const button = new ActionRowBuilder()

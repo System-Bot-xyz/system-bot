@@ -71,18 +71,18 @@ module.exports = {
                 .addComponents(
                     new ButtonBuilder()
                         .setCustomId('General')
-                        .setLabel('🎫 Create Ticket')
+                        .setLabel('🎫 General')
                         .setStyle(ButtonStyle.Secondary),
                     new ButtonBuilder()
-                        .setCustomId('Video Report')
-                        .setLabel('📷 Video Report')
+                        .setCustomId('How to use')
+                        .setLabel('❓ How to use')
                         .setStyle(ButtonStyle.Secondary)
                 )
 
                 const channel = client.channels.cache.get(panel.id);
                 await channel.send({ embeds: [embed], components: [button] });
 
-                await interaction.reply({ content: `The ticket pnael has been sent to **${channel}**.`, ephemeral: true });
+                await interaction.reply({ content: `The ticket panel has been sent to **${channel}**.`, ephemeral: true });
             }
         } catch (err) {
             console.log(err);

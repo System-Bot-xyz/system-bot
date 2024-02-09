@@ -39,7 +39,7 @@ module.exports = {
       .setHeight(300)
       .setBackgroundColor("#151515");
 
-    const chartURL = await chart.getShortURL();
+    const chartURL = chart.getShortURL();
     const embed = new EmbedBuilder()
       .setTitle("Member Count Chart")
       .setDescription(

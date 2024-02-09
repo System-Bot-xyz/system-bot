@@ -18,6 +18,7 @@
     "bootstrap": "^5.3.2",
     "btoa": "^1.2.1",
     "canvafy": "^7.0.4",
+    "captcha-canvas": "^3.2.1",
     "certbot": "^5.0.3",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",

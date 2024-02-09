@@ -5,7 +5,7 @@ module.exports = {
         .setName('timeout')
         .setDescription('Time out a server member.')
         .addUserOption(option => option.setName('user').setDescription('The user you want to time out').setRequired(true))
-        .addStringOption(option => option.setName('duration').setRequired(true).setDescription('The duration of the timeout').addChoices(
+        .addStringOption(option => option.setName('duration').setDescription('The duration of the timeout').addChoices(
             { name: '60 Seconds', value: '60' },
             { name: '2 Minutes', value: '120' },
             { name: '5 Minutes', value: '300' },
@@ -31,9 +31,8 @@ module.exports = {
             { name: '6 Months', value: '15768000' },
             { name: '1 Year', value: '31536000' },
             { name: '2 Years', value: '63072000' },
-            { name: '3 Years', value: '94608000' },
-            { name: '5 Years', value: '157680000' },
-        ))
+            
+        ).setRequired(true))
         .addStringOption(option => option.setName('reason').setDescription('The reason for timing out the user.')),
 
     async execute(interaction){

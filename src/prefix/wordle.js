@@ -2,7 +2,7 @@ const { Wordle } = require('discord-gamecord');
 
 module.exports = {
     name: 'wordle',
-    description: 'Play a game of wordle.',
+    description: 'Play a wordle game.',
 
     run: async(client, message, args) => {
         const Game = new Wordle({

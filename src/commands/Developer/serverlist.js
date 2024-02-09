@@ -4,7 +4,7 @@ module.exports = {
     owner: true,
     data: new SlashCommandBuilder()
         .setName('server-list')
-        .setDescription('Get a list of all the server the bot is in.'),
+        .setDescription('Get a list of all the servers where the bot is in.'),
     async execute(interaction, client){
         await interaction.deferReply({ ephemeral: true });
 

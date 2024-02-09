@@ -3,7 +3,7 @@ const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('server-status')
-        .setDescription('Get the overall percentages of each status based on members.'),
+        .setDescription('Get the --overall percentages-- of each status based on members.'),
     async execute(interaction){
         async function sendMessage(message){
             const embed = new EmbedBuilder()

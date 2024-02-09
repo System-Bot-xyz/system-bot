@@ -2,7 +2,7 @@ const { RockPaperScissors } = require('discord-gamecord');
 
 module.exports = {
     name: 'rock-paper-scissors',
-    description: 'Play a game of rock paper scissors.',
+    description: 'Play a rock paper scissors game.',
 
     run: async(client, message, args) => {
         const { options } = interaction;

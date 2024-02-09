@@ -4,7 +4,7 @@ const captchaSchema = require('../../Schemas/captchaSchema');
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('captcha')
-        .setDescription('Setup the captcha verification system.')
+        .setDescription('Setup the captcha verification system. (text-channel)')
         .addSubcommand(command => command.setName('setup').setDescription('Setup the captcha verification system.').addRoleOption(option => option.setName('role').setDescription('The roleyou want to be given on verification').setRequired(true)).addStringOption(option => option.setName('captcha').setDescription('The captcha text you want in the image').setRequired(true)))
         .addSubcommand(command => command.setName('disable').setDescription('Disable the captcha verification system.')),
 

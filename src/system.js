@@ -280,7 +280,7 @@ client.on(Events.InteractionCreate, async interaction => {
     const answer = interaction.fields.getTextInputValue('answer');
     const cap = Data.Captcha;
 
-    if(answer != `${cap}`) return await interaction.reply({ content: `That was wrong! Try again.`, });
+    if(answer != `${cap}`) return await interaction.reply({ content: `Thats gonna wrong! Try again.`, });
     else {
       const roleID = Data.Role;
 

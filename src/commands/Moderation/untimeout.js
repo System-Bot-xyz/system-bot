@@ -3,7 +3,7 @@ const { SlashCommandBuilder, EmbedBuilder, PermissionsBitField } = require('disc
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('untimeout')
-        .setDescription('Untimes out a server member.')
+        .setDescription('Untime out a server member.')
         .addUserOption(option => option.setName('user').setDescription('The user you want to untimeout').setRequired(true))
         .addStringOption(option => option.setName('reason').setDescription('The reason for untiming out the user.')),
 

@@ -3,7 +3,7 @@ const { SlashCommandBuilder, EmbedBuilder, PermissionsBitField } = require('disc
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('timeout')
-        .setDescription('Times out a server member.')
+        .setDescription('Time out a server member.')
         .addUserOption(option => option.setName('user').setDescription('The user you want to time out').setRequired(true))
         .addStringOption(option => option.setName('duration').setRequired(true).setDescription('The duration of the timeout').addChoices(
             { name: '60 Seconds', value: '60' },

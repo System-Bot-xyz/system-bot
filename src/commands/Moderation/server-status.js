@@ -1,0 +1,43 @@
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+
+module.exports = {
+    data: new SlashCommandBuilder()
+        .setName('server-status')
+        .setDescription('Get the --overall percentages-- of each status based on members.'),
+    async execute(interaction){
+        async function sendMessage(message){
+            const embed = new EmbedBuilder()
+                .setColor("Random")
+                .setDescription(message);
+
+            await interaction.reply({ embeds: [embed] });
+        }
+
+        async function calculate(status, m){
+            return Math.round((status.length / m.size) * 100) + `%`;
+        }
+
+        const { guild } = interaction;
+        var members = await guild.members.fetch();
+
+        var online = [];
+        var idle = [];
+        var dnd = [];
+        var offline = [];
+
+        await members.forEach(async member => {
+            if(member.presence == null) return offline.push({ member: member.id });
+            if(member.presence.status == null) return online.push({ member: member.id });
+            if(member.presence.status == null) return idle.push({ member: member.id });
+            if(member.presence.status == null) return dnd.push({ member: member.id });
+        });
+
+        var onlineP, idleP, dndP, offlineP;
+        onlineP = calculate(online, members);
+        idleP = calculate(idle, members);
+        dndP = calculate(dnd, members);
+        offlineP = calculate(offline, members);
+
+        await sendMessage(`🌍 **Server Status Information**\n\n**Online Members**:\n>\`${onlineP} | ${online.length}\`\n\n**Idle Members**: \`${idleP} | ${idle.length}\`\n\n**Do Not Disturb Members**:\n> \`${dndP} | ${dnd.length}\`\n\n**Offline Members**: \`${offlineP} | ${offline.length}\`\n\nTotal members being counted: \`${members.size}\``);
+    }
+}

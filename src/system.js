@@ -12,6 +12,7 @@ const {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
+  TextInputStyle
 } = require(`discord.js`);
 const fs = require("fs");
 const client = new Client({
@@ -205,7 +206,97 @@ client.on(Events.MessageCreate, async message => {
   } catch (error) {
     console.error('error', error);
   }
-})
+});
+
+//Captcha Verification
+const { CaptchaGenerator } = require('captcha-canvas');
+const captchaSchema = require('./Schemas/captchaSchema');
+client.on(Events.GuildMemberAdd, async member => {
+  const Data = await captchaSchema({ Guild: member.guild.id });
+  if(!Data) return;
+  else {
+    const cap = Data.Captcha;
+
+    const captcha = new CaptchaGenerator()
+      .setDimension(150, 450)
+      .setCaptcha({ text: `${cap}`, size: 60, color: 'green' })
+      .setDecoy({ opacity: 0.5 })
+      .setTrace({ color: 'green' })
+
+    const buffer = captcha.generateSync();
+
+    const attachment = new AttachmentBuilder(buffer, { name: 'captcha.png' });
+
+    const embed = new EmbedBuilder()
+      .setColor('Random')
+      .setImage('attachment://captcha.png')
+      .setTimestamp(`Solve the captcha to verify in ${member.guild.name}`)
+      .setFooter({ text: 'Use the button below to submit your captcha answer!' })
+
+    const capButton = new ActionRowBuilder()
+    .addComponents(
+      new ButtonBuilder()
+      .setCustomId('capButton')
+      .setLabel('Submit')
+      .setStyle(ButtonStyle.Danger)
+    )
+
+    const capModal = new ModalBuilder()
+      .setTitle('Submit Captcha Answer')
+      .setCustomId('capModal')
+
+    const answer = new TextInputBuilder()
+      .setCustomId('answer')
+      .setRequired(true)
+      .setLabel('You captcha answer')
+      .setPlaceholder('Submit what you think the captcha is! If you get it wrong you can try again.')
+      .setStyle(TextInputStyle.Short)
+
+    const firstActionRow = new ActionRowBuilder().addComponents(answer);
+
+    capModal.addComponents(firstActionRow);
+
+    const msg = await member.send({ embeds: [embed], files: [attachment], components: [capButton] }).catch(err => {
+      return;
+    });
+
+    const collector = msg.createMessageComponentCollector()
+
+    collector.on('collect', async i => {
+      if(i.customId === 'capButton'){
+        i.showModal(capModal);
+      }
+    });
+
+    guild=member.guild;
+  }
+});
+client.on(Events.InteractionCreate, async interaction => {
+  if(!interaction.isModalSubmit()) return;
+  else {
+    if(!interaction.customId === 'capModal') return;
+    const Data = await captchaSchema.findOne({ Guild: guild.id });
+
+    const answer = interaction.fields.getTextInputValue('answer');
+    const cap = Data.Captcha;
+
+    if(answer != `${cap}`) return await interaction.reply({ content: `Thats gonna wrong! Try again.`, });
+    else {
+      const roleID = Data.Role;
+
+      const capGuild = await client.guilds.fetch(guild.id);
+      const role = await capGuild.members.fetch(roleID);
+
+      const member = await capGuild.members.fetch(interaction.user.id);
+
+      await member.roles.add(role).catch(err => {
+        interaction.reply({ content: `There was an error verifying, contact server staff to proceed!` });
+      });
+
+      await interaction.reply({ content: `You have been verified within ${capGuild.name}` });
+    }
+  }
+});
 
 // Ticket System
 const ticketSchema = require("./Schemas/ticketSchema.js");

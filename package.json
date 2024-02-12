@@ -4,11 +4,8 @@
   "description": "",
   "main": "src/system.js",
   "scripts": {
-    "test": "test/test.js",
     "start": "src/system.js",
-    "start-client": "src/system.js",
-    "start-websocket": "server/server.js",
-    "dev": "dev/dev.js"
+    "start-websocket": "server/server.js"
   },
   "author": "Vecto.",
   "license": "ISC",

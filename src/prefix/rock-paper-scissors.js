@@ -10,7 +10,7 @@ module.exports = {
 
         const Game = new RockPaperScissors({
             message: interaction,
-            isSlashGame: true,
+            isSlashGame: false,
             opponent: opponent,
             embed: {
                 title: 'Rock Paper Scissors',

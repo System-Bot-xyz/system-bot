@@ -25,14 +25,14 @@ module.exports = {
             .setColor('Orange')
             .setTitle(`You been kicked`)
             .setDescription(`You have been **kicked** from ${interaction.guild} | Reason: ${reason}`)
-            .setFooter('2022-2023 © PlayGS Netzwerk | Alle rechte vorbehalten.' ,interaction.user.username, interaction.user.displayAvatarURL({ dynamic: true }))
+            .setFooter({ text: interaction.user.displayAvatarURL({ dynamic: true }) })
             .setTimestamp();
 
         const embed = new EmbedBuilder()
            .setColor('Purple')
            .setTitle(`Kicked Member`)
            .setDescription(`Successfully kicked ${userKick.tag} from the server. | Reason: ${reason}`)
-           .setFooter('2022-2023 © PlayGS Netzwerk | Alle rechte vorbehalten.',interaction.user.username, interaction.user.displayAvatarURL({ dynamic: true }))
+           .setFooter({ text: interaction.user.displayAvatarURL({ dynamic: true }) })
            .setTimestamp();
 
         await memberKick.send({ embeds: [embedDM] }).catch(err => {

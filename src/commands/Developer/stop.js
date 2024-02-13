@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 module.exports = {
+    owner: true,
     data: new SlashCommandBuilder()
         .setName('stop')
         .setDescription('Shutdown the bot.'),

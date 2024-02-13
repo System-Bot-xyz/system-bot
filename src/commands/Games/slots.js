@@ -9,7 +9,7 @@ module.exports = {
     async execute(interaction){
         const Game = new Slots({
             message: message,
-            isSlashGame: false,
+            isSlashGame: true,
             embed: {
                 title: 'Slot Machine',
                 color: 'Random',

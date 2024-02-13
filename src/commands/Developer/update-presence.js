@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, PermissionFlagsBits, ActivityType, EmbedBuilder } = require('discord.js');
 
 module.exports = {
+    owner: true,
     data: new SlashCommandBuilder()
         .setName('update-presence')
         .setDescription('Update the presence of the bot.')

@@ -41,6 +41,12 @@ module.exports = {
             .setFooter(interaction.user.username, interaction.user.displayAvatarURL({ dynamic: true }))
             .setTimestamp();
 
+        warnSchema.create({
+            Guild: interaction.guild.id,
+            UserId: interaction.user.id,
+            Reason: reason
+        });
+
         await interaction.reply({ embeds: [embed], ephemeral: true });
 
         await member.send({ embeds: [dmSend] }).catch(err => {

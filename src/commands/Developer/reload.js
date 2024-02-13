@@ -3,6 +3,7 @@ const handleCommands = require('../../functions/handelCommands');
 const handleEvents = require('../../functions/handelEvents');
 
 module.exports = {
+    owner: true,
     data: new SlashCommandBuilder()
         .setName('reload')
         .setDescription('Reload the commands oder events.')

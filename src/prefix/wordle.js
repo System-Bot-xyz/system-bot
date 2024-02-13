@@ -7,7 +7,7 @@ module.exports = {
     run: async(client, message, args) => {
         const Game = new Wordle({
             message: interaction,
-            isSlashGame: true,
+            isSlashGame: false,
             embed: {
                 title: `Wordle`,
                 color: '#5865F2',

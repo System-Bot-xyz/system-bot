@@ -15,6 +15,7 @@
     "bcrypt": "^5.1.1",
     "bootstrap": "^5.3.2",
     "btoa": "^1.2.1",
+    "canvacard": "^5.2.7",
     "canvafy": "^7.0.4",
     "captcha-canvas": "^3.2.1",
     "certbot": "^5.0.3",

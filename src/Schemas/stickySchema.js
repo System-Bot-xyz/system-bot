@@ -1,4 +1,4 @@
-const { model, Schema } = require('discord.js');
+const { model, Schema } = require('mongoose');
 
 let stickySchema = new Schema({
     Message: { type: String },

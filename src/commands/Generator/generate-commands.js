@@ -6,7 +6,7 @@ module.exports = {
         .setName('generate-command')
         .setDescription('Generate code for a discord.js v14 bot command!'),
 
-    async execute(interaction) {
+    async execute(interaction, guild) {
         createBuilder({ interaction: interaction, path: './cache/' }).catch(async err => {
             return await interaction.reply({ content: `There was an error.`, ephemeral: true })
         })

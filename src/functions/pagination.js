@@ -99,7 +99,7 @@ module.exports = async(interaction, pages, time = 30 * 1000) => {
         });
 
         return msg;
-    } catch (e) {
+    } catch (error) {
         console.error(`[ERROR] ${error}`);
     }
 }

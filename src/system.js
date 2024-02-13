@@ -94,7 +94,7 @@ client.on(Events.MessageCreate, async(message) => {
 });
 
 //Anti link system
-const linkSchema = require("./Schemas/linkSchema.js");
+const linkSchema = require("./Schemas/linkSchema");
 client.on(Events.MessageCreate, async (message) => {
   if (
     message.content.startsWith("http") ||
@@ -274,6 +274,8 @@ client.on(Events.GuildMemberAdd, async member => {
 client.on(Events.InteractionCreate, async interaction => {
   if(!interaction.isModalSubmit()) return;
   else {
+    const guild = interaction.guild
+
     if(!interaction.customId === 'capModal') return;
     const Data = await captchaSchema.findOne({ Guild: guild.id });
 
@@ -299,7 +301,7 @@ client.on(Events.InteractionCreate, async interaction => {
 });
 
 // Ticket System
-const ticketSchema = require("./Schemas/ticketSchema.js");
+const ticketSchema = require("./Schemas/ticketSchema");
 client.on(Events.InteractionCreate, async (interaction) => {
   const { customId, guild, channel } = interaction;
   if (interaction.isButton()) {

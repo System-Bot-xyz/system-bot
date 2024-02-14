@@ -300,6 +300,46 @@ client.on(Events.InteractionCreate, async interaction => {
   }
 });
 
+//ModPanel
+client.on(Events.InteractionCreate, async interaction => {
+  if(!interaction.guild) return;
+
+  if(interaction.customId !== 'Moderate') return;
+  else {
+    const string = await interaction.values.toString();
+
+    if(string.includes('ban')){
+      const userId = await interaction.values[0].replace(/ban/g, '');
+      const reason = `Moderated by ${interaction.user.id}`;
+      const ban = await interaction.guild.bans.create(userId, {reason}).catch(async err => {
+        await interaction.reply({ content: `I couldn't ban that user!` });
+      });
+
+      if(ban) await interaction.reply({ content: `I have banned ${userId}!` });
+    }
+
+    if(string.includes('kick')){
+      const userId = await interaction.values[0].replace(/kick/g, '');
+      const member = await interaction.guild.members.fetch(userId);
+      const kick = await member.kick({ reason: `Moderated by ${interaction.user.id}` }).catch(async err => {
+        await interaction.reply({ content: `I couldn't kick that user!` });
+      });
+
+      if(kick) await interaction.reply({ content: `I have kicked ${userId}!` });
+    }
+
+    if(string.includes('timeout')){
+      const userId = await interaction.values[0].replace(/timeout/g, '');
+      const member = await interaction.guild.members.fetch(userId);
+      const timeout = await member.timeout({ reason: `Moderated by ${interaction.user.id}` }).catch(async err => {
+        await interaction.reply({ content: `I couldn't time out that user!` });
+      });
+
+      if(timeout) await interaction.reply({ content: `I have time out ${userId}!` });
+    }
+  }
+});
+
 // Ticket System
 const ticketSchema = require("./Schemas/ticketSchema");
 client.on(Events.InteractionCreate, async (interaction) => {

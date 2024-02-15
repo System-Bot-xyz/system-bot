@@ -80,8 +80,8 @@ process.on("uncaughtExceptionMonitor", (err, origin) => {
 //    member.roles.add(giverole);
 //})
 
+//prefix command handler
 client.on(Events.MessageCreate, async(message) => {
-  //prefix command handler
   const prefix = process.env.PREFIX;
 
   if (!message.content.startsWith(prefix) || message.author.bot) return;
@@ -90,6 +90,38 @@ client.on(Events.MessageCreate, async(message) => {
   const prefixcmd = client.prefix.get(command);
   if (prefixcmd) {
       prefixcmd.run(client, message, args)
+  }
+});
+
+//Link Identifier
+client.on(Events.MessageCreate, async message => {
+  if(!message.guild) return;
+  if(message.author.bot) return;
+
+  if(message.content.match(/https:\/\/discord\.com\/channels\/\d+\/(\d+)\/(\d+)/)) {
+    try {
+      const [ channelId, messageId ] = message.content.match(/https:\/\/discord\.com\/channels\/\d+\/(\d+)\/(\d+)/);
+      const directmessage = await message.channel.messages.fetch(messageId);
+
+      const embed = new EmbedBuilder()
+        .setColor('Random')
+        .setAuthor({ name: directmessage.author.username, iconURL: directmessage.author.avatarURL() })
+        .setDescription(directmessage.content)
+
+      const button = new ActionRowBuilder()
+      .addComponents(
+        new ButtonBuilder()
+        .setLabel('View Message')
+        .setURL(message.content)
+        .setStyle(ButtonStyle.Link)
+      );
+
+      await message.reply({ embeds: [embed], components: [button] });
+    } catch(e){
+      return console.log(e);
+    }
+  } else {
+    return;
   }
 });
 
@@ -609,10 +641,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
       })
       .addFields({ name: "Command", value: `${command}` })
       .addFields({ name: "Description", value: `${description}` })
-      .setTimestamp()
-      .setFooter({
-        text: `• Bug Report System • 2022-2023 © PlayGS Netzwerk | Alle rechte vorbehalten.`,
-      });
+      .setTimestamp();
 
     await channel.send({ embeds: [embed] }).catch((err) => {});
     await interaction.reply({
@@ -654,10 +683,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
       })
       .addFields({ name: "Spieler", value: `${playername}` })
       .addFields({ name: "Grund", value: `${reportreason}` })
-      .setTimestamp()
-      .setFooter({
-        text: `• Player Report System • 2022-2023 © PlayGS Netzwerk | Alle rechte vorbehalten.`,
-      });
+      .setTimestamp();
 
     await channel.send({ embeds: [embed] }).catch((err) => {});
     await interaction.reply({
@@ -707,4 +733,48 @@ client.on(Events.MessageCreate, async message => {
       }
     }
   })
+});
+
+//Chat Logic
+const axios = require('axios');
+client.on(Events.MessageCreate, async message => {
+  if(message.channel.type === ChannelType.DM){
+    if(message.author.bot) return;
+
+    await message.channel.sendTyping();
+
+    let input = {
+      method: 'GET',
+      url: `https://google-bard1.p.rapidapi.com/`,
+      headers: {
+        text: message.content,
+        'X-RapidAPI-Key': process.env.GOOGLEBARD_RAPIDAPI_KEY,
+        'X-RapidAPI-Host': 'google-bard1.p.rapidapi.com'
+      }
+    };
+
+    try {
+      const output = await axios.request(input);
+      const response = output.data.response;
+
+      if(response.length > 2000){
+        const chunks = response.match(/.{1,2000}/g);
+
+        for(let i = 0; i < chunks.length; i++){
+          await message.author.send(chunks[i]).catch(err => {
+            message.author.send(`I am having a hard time finding that request! Because i am an AI on discord, i don't have time to process long requests.`).catch(err => {});
+          });
+        }
+      } else {
+        await message.author.send(response).catch(err => {
+          message.author.send(`I am having a hard time finding that request! Because i am an AI on discord, i don't have time to process long requests.`).catch(err => {});
+        });
+      }
+    } catch (e) {
+      console.log(e);
+      message.author.send(`I am having a hard time finding that request! Because i am an AI on discord, i don't have time to process long requests.`).catch(err => {});
+    }
+  } else {
+    return;
+  }
 });

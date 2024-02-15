@@ -27,8 +27,7 @@ module.exports = {
             .addFields(
                 { name: 'Wunsch', value: `${name}` },
                 { name: 'Description', value: `${description}` },
-            )
-            .setFooter({ text: 'Ulix | ulixserver.de © 2023 | Alle rechte vorbehalten.' });
+            );
 
         await guild.channels.cache.get(process.env.WISHES_CHANNEL).send({ //wünsche channel id
             embeds: ([embed]),

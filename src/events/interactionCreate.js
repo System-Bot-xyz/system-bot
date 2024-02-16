@@ -1,3 +1,4 @@
+const { PermissionsBitField } = require('discord.js');
 const modroleSchema = require('../Schemas/modroleSchema');
 const blockcmdSchema = require('../Schemas/blockcmdSchema');
 
@@ -11,6 +12,11 @@ module.exports = {
         //owner command
         if(command.owner == true){
             if(interaction.user.id !== process.env.DEV_ID) return await interaction.reply({ content: `You cant use this command.` });
+        }
+
+        //Administrator command
+        if(command.admin == true){
+            if(interaction.user.id !== PermissionsBitField.Flags.Administrator) return await interaction.reply({ content: `You cant use this command.` });
         }
 
         //mod role system

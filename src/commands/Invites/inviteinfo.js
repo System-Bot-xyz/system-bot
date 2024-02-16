@@ -5,7 +5,6 @@ module.exports = {
         .setName('invite-info')
         .setDescription('Get info on the invites server.')
         .addStringOption(option => option.setName('invite').setDescription('The invite you want to check.').setRequired(true)),
-
     async execute(interaction) {
         await interaction.deferReply({ ephemeral: true });
 
@@ -33,12 +32,12 @@ module.exports = {
             .setTitle(invite.guild.name)
             .setThumbnail(invite.guild.iconURL())
             .addFields({ name: 'Server Features', value: `> *${invite.guild.features.join('\n> ')}*` })
-            .addFields({ name: `Boosts: \`${invite.guild.premiumSubscriptionCount}\``, value: `` })
-            .addFields({ name: `Member Count: \`${invite.memberCount}\``, value: ``})
-            .addFields({ name: `Server ID: \`${invite.guild.id}\``, value: ``})
+            .addFields({ name: `Boosts: \`${invite.guild.premiumSubscriptionCount}\``, value: ` ` })
+            .addFields({ name: `Member Count: \`${invite.memberCount}\``, value: ` `})
+            .addFields({ name: `Server ID: \`${invite.guild.id}\``, value: ` `})
             .addFields({ name: `Server Description:`, value: `${invite.guild.description??'none'}` })
             .addFields({ name: `Vanity Invite Code: \`${invite.guild.vanityURLCode??'none'}`, value: ' ' })
-            .addFields({ name: `Includes: \`${me}\``, value: `` })
+            .addFields({ name: `Includes: \`${me}\``, value: ` ` })
             .setImage(invite.guild.bannerURL({ size: 2048 }))
             .setTimestamp()
             .setFooter({ text: 'Invite Information' })

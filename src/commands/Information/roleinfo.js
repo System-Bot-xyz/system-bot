@@ -5,7 +5,6 @@ module.exports = {
         .setName('role-info')
         .setDescription('Get some role info.')
         .addRoleOption(option => option.setName('role').setDescription('The role you want to get.').setRequired(true)),
-
     async execute(interaction) {
         const { options, guild } = interaction;
         const role = options.getRole('role');

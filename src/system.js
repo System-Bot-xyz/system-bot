@@ -9,10 +9,13 @@ const {
   Collection,
   Events,
   ChannelType,
+  Partials,
+  NewsChannel,
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
-  TextInputStyle
+  TextInputStyle,
+  ReactionUserManager,
 } = require(`discord.js`);
 const fs = require("fs");
 const client = new Client({
@@ -21,10 +24,23 @@ const client = new Client({
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
     GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.GuildMessageReactions,
+    GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.GuildVoiceStates,
+  ],
+  partials: [
+    Partials.Message,
+    Partials.GuildMessageReactions,
+    Partials.Channel,
+    Partials.MessageReactionAdd,
+    Partials.MessageReactionRemove,
+    Partials.Reaction,
+    Partials.VoiceStateUpdate,
+    Partials.GuildVoice,
   ],
 });
 const { createTranscript } = require("discord-html-transcripts");
-const { startTyping } = require('./functions/startTyping');
+const { startTyping } = require("./functions/startTyping");
 
 require("../server/server");
 
@@ -83,7 +99,7 @@ process.on("uncaughtExceptionMonitor", (err, origin) => {
 //})
 
 //prefix command handler
-client.on(Events.MessageCreate, async(message) => {
+client.on(Events.MessageCreate, async (message) => {
   const prefix = process.env.PREFIX;
 
   if (!message.content.startsWith(prefix) || message.author.bot) return;
@@ -91,35 +107,41 @@ client.on(Events.MessageCreate, async(message) => {
   const command = args.shift().toLowerCase();
   const prefixcmd = client.prefix.get(command);
   if (prefixcmd) {
-      prefixcmd.run(client, message, args)
+    prefixcmd.run(client, message, args);
   }
 });
 
 //Link Identifier
-client.on(Events.MessageCreate, async message => {
-  if(!message.guild) return;
-  if(message.author.bot) return;
+client.on(Events.MessageCreate, async (message) => {
+  if (!message.guild) return;
+  if (message.author.bot) return;
 
-  if(message.content.match(/https:\/\/discord\.com\/channels\/\d+\/(\d+)\/(\d+)/)) {
+  if (
+    message.content.match(/https:\/\/discord\.com\/channels\/\d+\/(\d+)\/(\d+)/)
+  ) {
     try {
-      const [ channelId, messageId ] = message.content.match(/https:\/\/discord\.com\/channels\/\d+\/(\d+)\/(\d+)/);
+      const [channelId, messageId] = message.content.match(
+        /https:\/\/discord\.com\/channels\/\d+\/(\d+)\/(\d+)/
+      );
       const directmessage = await message.channel.messages.fetch(messageId);
 
       const embed = new EmbedBuilder()
-        .setColor('Random')
-        .setAuthor({ name: directmessage.author.username, iconURL: directmessage.author.avatarURL() })
-        .setDescription(directmessage.content)
+        .setColor("Random")
+        .setAuthor({
+          name: directmessage.author.username,
+          iconURL: directmessage.author.avatarURL(),
+        })
+        .setDescription(directmessage.content);
 
-      const button = new ActionRowBuilder()
-      .addComponents(
+      const button = new ActionRowBuilder().addComponents(
         new ButtonBuilder()
-        .setLabel('View Message')
-        .setURL(message.content)
-        .setStyle(ButtonStyle.Link)
+          .setLabel("View Message")
+          .setURL(message.content)
+          .setStyle(ButtonStyle.Link)
       );
 
       await message.reply({ embeds: [embed], components: [button] });
-    } catch(e){
+    } catch (e) {
       return console.log(e);
     }
   } else {
@@ -158,28 +180,28 @@ client.on(Events.MessageCreate, async (message) => {
 
 //Welcome Message System
 const welcomeSetupSchema = require("./Schemas/welcomeSchema");
-client.on(Events.GuildMemberAdd, async member => {
+client.on(Events.GuildMemberAdd, async (member) => {
   try {
     const guildId = member.guild.id;
     const existingSetup = await welcomeSetupSchema.findOne({ guildId });
-    if(!existingSetup){
+    if (!existingSetup) {
       return;
     }
     const channel = member.guild.channels.cache.get(existingSetup.channelId);
-    if(!channel){
-      console.error('error', error);
+    if (!channel) {
+      console.error("error", error);
       return;
     }
     let messageContent = existingSetup.welcomeMessage
-      .replace('{SERVER_MEMBER}', interaction.guild.memberCount)
-      .replace('{USER_MENTION}', `<@${interaction.user.id}>`)
-      .replace('{USER_NAME}', interaction.user.username)
-      .replace('{SERVER_NAME}', interaction.guild.name);
+      .replace("{SERVER_MEMBER}", interaction.guild.memberCount)
+      .replace("{USER_MENTION}", `<@${interaction.user.id}>`)
+      .replace("{USER_NAME}", interaction.user.username)
+      .replace("{SERVER_NAME}", interaction.guild.name);
 
-    if(existingSetup.useEmbed){
+    if (existingSetup.useEmbed) {
       const embed = new EmbedBuilder()
         .setColor("Random")
-        .setTitle('Welcome to the **{SERVER_NAME}** server!')
+        .setTitle("Welcome to the **{SERVER_NAME}** server!")
         .setDescription(messageContent)
         .setThumbnail(userAvatar)
         .setFooter({ text: interaction.guild.name })
@@ -190,37 +212,43 @@ client.on(Events.GuildMemberAdd, async member => {
       await channel.send(messageContent);
     }
   } catch (error) {
-    console.error('error', error);
+    console.error("error", error);
   }
 });
 
 //Level System
 const Level = require("./Schemas/levelSchema");
-client.on(Events.MessageCreate, async message => {
+client.on(Events.MessageCreate, async (message) => {
   try {
     const guildId = message.guild.id;
     const existingLevel = await Level.findOne({ guildId });
-    if(!existingLevel) return;
+    if (!existingLevel) return;
 
     const userId = message.author.id;
 
     existingLevel.userXp += 4;
     await existingLevel.save();
 
-    if(existingLevel.userXp >= 100){
+    if (existingLevel.userXp >= 100) {
       existingLevel.userXp -= 100;
       existingLevel.userLevel += 1;
 
       const guild = client.guilds.cache.get(guildId);
       const channel = guild.channels.cache.get(existingLevel.channelId);
 
-      let levelUpMessage = existingLevel.messages.length > 0 ? existingLevel.messages[0].content
-        .replace('{userName}', message.author.username)
-        .replace('{userMention}', `<@${userId}>`) 
-        .replace('{userLevel}', existingLevel.userLevel) : `Congratulations ${message.author}! You leveled up to level ${existingLevel.userLevel}!`;
-        
-      if(existingLevel.useEmbed){
-        const userAvatar = message.author.displayAvatarURL({ format: 'png', dynamic: true });
+      let levelUpMessage =
+        existingLevel.messages.length > 0
+          ? existingLevel.messages[0].content
+              .replace("{userName}", message.author.username)
+              .replace("{userMention}", `<@${userId}>`)
+              .replace("{userLevel}", existingLevel.userLevel)
+          : `Congratulations ${message.author}! You leveled up to level ${existingLevel.userLevel}!`;
+
+      if (existingLevel.useEmbed) {
+        const userAvatar = message.author.displayAvatarURL({
+          format: "png",
+          dynamic: true,
+        });
         const serverName = message.guild.name;
 
         const embed = new EmbedBuilder()
@@ -238,85 +266,93 @@ client.on(Events.MessageCreate, async message => {
     }
     await existingLevel.save();
   } catch (error) {
-    console.error('error', error);
+    console.error("error", error);
   }
 });
 
 //Captcha Verification
-const { CaptchaGenerator } = require('captcha-canvas');
-const captchaSchema = require('./Schemas/captchaSchema');
-client.on(Events.GuildMemberAdd, async member => {
+const { CaptchaGenerator } = require("captcha-canvas");
+const captchaSchema = require("./Schemas/captchaSchema");
+client.on(Events.GuildMemberAdd, async (member) => {
   const Data = await captchaSchema({ Guild: member.guild.id });
-  if(!Data) return;
+  if (!Data) return;
   else {
     const cap = Data.Captcha;
 
     const captcha = new CaptchaGenerator()
       .setDimension(150, 450)
-      .setCaptcha({ text: `${cap}`, size: 60, color: 'green' })
+      .setCaptcha({ text: `${cap}`, size: 60, color: "green" })
       .setDecoy({ opacity: 0.5 })
-      .setTrace({ color: 'green' })
+      .setTrace({ color: "green" });
 
     const buffer = captcha.generateSync();
 
-    const attachment = new AttachmentBuilder(buffer, { name: 'captcha.png' });
+    const attachment = new AttachmentBuilder(buffer, { name: "captcha.png" });
 
     const embed = new EmbedBuilder()
-      .setColor('Random')
-      .setImage('attachment://captcha.png')
+      .setColor("Random")
+      .setImage("attachment://captcha.png")
       .setTimestamp(`Solve the captcha to verify in ${member.guild.name}`)
-      .setFooter({ text: 'Use the button below to submit your captcha answer!' })
+      .setFooter({
+        text: "Use the button below to submit your captcha answer!",
+      });
 
-    const capButton = new ActionRowBuilder()
-    .addComponents(
+    const capButton = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
-      .setCustomId('capButton')
-      .setLabel('Submit')
-      .setStyle(ButtonStyle.Danger)
-    )
+        .setCustomId("capButton")
+        .setLabel("Submit")
+        .setStyle(ButtonStyle.Danger)
+    );
 
     const capModal = new ModalBuilder()
-      .setTitle('Submit Captcha Answer')
-      .setCustomId('capModal')
+      .setTitle("Submit Captcha Answer")
+      .setCustomId("capModal");
 
     const answer = new TextInputBuilder()
-      .setCustomId('answer')
+      .setCustomId("answer")
       .setRequired(true)
-      .setLabel('You captcha answer')
-      .setPlaceholder('Submit what you think the captcha is! If you get it wrong you can try again.')
-      .setStyle(TextInputStyle.Short)
+      .setLabel("You captcha answer")
+      .setPlaceholder(
+        "Submit what you think the captcha is! If you get it wrong you can try again."
+      )
+      .setStyle(TextInputStyle.Short);
 
     const firstActionRow = new ActionRowBuilder().addComponents(answer);
 
     capModal.addComponents(firstActionRow);
 
-    const msg = await member.send({ embeds: [embed], files: [attachment], components: [capButton] }).catch(err => {
-      return;
-    });
+    const msg = await member
+      .send({ embeds: [embed], files: [attachment], components: [capButton] })
+      .catch((err) => {
+        return;
+      });
 
-    const collector = msg.createMessageComponentCollector()
+    const collector = msg.createMessageComponentCollector();
 
-    collector.on('collect', async i => {
-      if(i.customId === 'capButton'){
+    collector.on("collect", async (i) => {
+      if (i.customId === "capButton") {
         i.showModal(capModal);
       }
     });
 
-    guild=member.guild;
+    guild = member.guild;
   }
 });
-client.on(Events.InteractionCreate, async interaction => {
-  if(!interaction.isModalSubmit()) return;
+client.on(Events.InteractionCreate, async (interaction) => {
+  if (!interaction.isModalSubmit()) return;
   else {
-    const guild = interaction.guild
+    const guild = interaction.guild;
 
-    if(!interaction.customId === 'capModal') return;
+    if (!interaction.customId === "capModal") return;
     const Data = await captchaSchema.findOne({ Guild: guild.id });
 
-    const answer = interaction.fields.getTextInputValue('answer');
+    const answer = interaction.fields.getTextInputValue("answer");
     const cap = Data.Captcha;
 
-    if(answer != `${cap}`) return await interaction.reply({ content: `Thats gonna wrong! Try again.`, });
+    if (answer != `${cap}`)
+      return await interaction.reply({
+        content: `Thats gonna wrong! Try again.`,
+      });
     else {
       const roleID = Data.Role;
 
@@ -325,51 +361,65 @@ client.on(Events.InteractionCreate, async interaction => {
 
       const member = await capGuild.members.fetch(interaction.user.id);
 
-      await member.roles.add(role).catch(err => {
-        interaction.reply({ content: `There was an error verifying, contact server staff to proceed!` });
+      await member.roles.add(role).catch((err) => {
+        interaction.reply({
+          content: `There was an error verifying, contact server staff to proceed!`,
+        });
       });
 
-      await interaction.reply({ content: `You have been verified within ${capGuild.name}` });
+      await interaction.reply({
+        content: `You have been verified within ${capGuild.name}`,
+      });
     }
   }
 });
 
 //ModPanel
-client.on(Events.InteractionCreate, async interaction => {
-  if(!interaction.guild) return;
+client.on(Events.InteractionCreate, async (interaction) => {
+  if (!interaction.guild) return;
 
-  if(interaction.customId !== 'Moderate') return;
+  if (interaction.customId !== "Moderate") return;
   else {
     const string = await interaction.values.toString();
 
-    if(string.includes('ban')){
-      const userId = await interaction.values[0].replace(/ban/g, '');
+    if (string.includes("ban")) {
+      const userId = await interaction.values[0].replace(/ban/g, "");
       const reason = `Moderated by ${interaction.user.id}`;
-      const ban = await interaction.guild.bans.create(userId, {reason}).catch(async err => {
-        await interaction.reply({ content: `I couldn't ban that user!` });
-      });
+      const ban = await interaction.guild.bans
+        .create(userId, { reason })
+        .catch(async (err) => {
+          await interaction.reply({ content: `I couldn't ban that user!` });
+        });
 
-      if(ban) await interaction.reply({ content: `I have banned ${userId}!` });
+      if (ban) await interaction.reply({ content: `I have banned ${userId}!` });
     }
 
-    if(string.includes('kick')){
-      const userId = await interaction.values[0].replace(/kick/g, '');
+    if (string.includes("kick")) {
+      const userId = await interaction.values[0].replace(/kick/g, "");
       const member = await interaction.guild.members.fetch(userId);
-      const kick = await member.kick({ reason: `Moderated by ${interaction.user.id}` }).catch(async err => {
-        await interaction.reply({ content: `I couldn't kick that user!` });
-      });
+      const kick = await member
+        .kick({ reason: `Moderated by ${interaction.user.id}` })
+        .catch(async (err) => {
+          await interaction.reply({ content: `I couldn't kick that user!` });
+        });
 
-      if(kick) await interaction.reply({ content: `I have kicked ${userId}!` });
+      if (kick)
+        await interaction.reply({ content: `I have kicked ${userId}!` });
     }
 
-    if(string.includes('timeout')){
-      const userId = await interaction.values[0].replace(/timeout/g, '');
+    if (string.includes("timeout")) {
+      const userId = await interaction.values[0].replace(/timeout/g, "");
       const member = await interaction.guild.members.fetch(userId);
-      const timeout = await member.timeout({ reason: `Moderated by ${interaction.user.id}` }).catch(async err => {
-        await interaction.reply({ content: `I couldn't time out that user!` });
-      });
+      const timeout = await member
+        .timeout({ reason: `Moderated by ${interaction.user.id}` })
+        .catch(async (err) => {
+          await interaction.reply({
+            content: `I couldn't time out that user!`,
+          });
+        });
 
-      if(timeout) await interaction.reply({ content: `I have time out ${userId}!` });
+      if (timeout)
+        await interaction.reply({ content: `I have time out ${userId}!` });
     }
   }
 });
@@ -696,33 +746,36 @@ client.on(Events.InteractionCreate, async (interaction) => {
 });
 
 // Sticky Message
-const stickySchema = require('./Schemas/stickySchema');
-client.on(Events.MessageCreate, async message => {
-  if(message.author.bot) return;
+const stickySchema = require("./Schemas/stickySchema");
+client.on(Events.MessageCreate, async (message) => {
+  if (message.author.bot) return;
 
-  stickySchema.findOne({ ChannelID: message.channel.id }, async(err, data) => {
-    if(err) throw err;
-    if(!data){
+  stickySchema.findOne({ ChannelID: message.channel.id }, async (err, data) => {
+    if (err) throw err;
+    if (!data) {
       return;
-    };
+    }
 
     let channel = data.ChannelID;
     let cachedChannel = client.channels.cache.get(channel);
 
     const embed = new EmbedBuilder()
-      .setColor('Random')
+      .setColor("Random")
       .setDescription(data.Message)
-      .setFooter({ text: 'This is a sticky message' });
+      .setFooter({ text: "This is a sticky message" });
 
-    if(message.channel.id == channel){
+    if (message.channel.id == channel) {
       data.CurrentCount += 1;
       data.save();
 
-      if(data.CurrentCount > data.MaxCount){
+      if (data.CurrentCount > data.MaxCount) {
         try {
-          await client.channels.cache.get(channel).messages.fetch(data.LastMessageID).then(async(m) => {
-            await m.delete();
-          });
+          await client.channels.cache
+            .get(channel)
+            .messages.fetch(data.LastMessageID)
+            .then(async (m) => {
+              await m.delete();
+            });
 
           let newMessage = await cachedChannel.send({ embeds: [embed] });
 
@@ -734,49 +787,169 @@ client.on(Events.MessageCreate, async message => {
         }
       }
     }
-  })
+  });
 });
 
 //Chat Logic
-const axios = require('axios');
-client.on(Events.MessageCreate, async message => {
-  if(message.channel.type === ChannelType.DM){
-    if(message.author.bot) return;
+const axios = require("axios");
+client.on(Events.MessageCreate, async (message) => {
+  if (message.channel.type === ChannelType.DM) {
+    if (message.author.bot) return;
 
     await message.channel.sendTyping();
 
     let input = {
-      method: 'GET',
+      method: "GET",
       url: `https://google-bard1.p.rapidapi.com/`,
       headers: {
         text: message.content,
-        'X-RapidAPI-Key': process.env.GOOGLEBARD_RAPIDAPI_KEY,
-        'X-RapidAPI-Host': 'google-bard1.p.rapidapi.com'
-      }
+        "X-RapidAPI-Key": process.env.GOOGLEBARD_RAPIDAPI_KEY,
+        "X-RapidAPI-Host": "google-bard1.p.rapidapi.com",
+      },
     };
 
     try {
       const output = await axios.request(input);
       const response = output.data.response;
 
-      if(response.length > 2000){
+      if (response.length > 2000) {
         const chunks = response.match(/.{1,2000}/g);
 
-        for(let i = 0; i < chunks.length; i++){
-          await message.author.send(chunks[i]).catch(err => {
-            message.author.send(`I am having a hard time finding that request! Because i am an AI on discord, i don't have time to process long requests.`).catch(err => {});
+        for (let i = 0; i < chunks.length; i++) {
+          await message.author.send(chunks[i]).catch((err) => {
+            message.author
+              .send(
+                `I am having a hard time finding that request! Because i am an AI on discord, i don't have time to process long requests.`
+              )
+              .catch((err) => {});
           });
         }
       } else {
-        await message.author.send(response).catch(err => {
-          message.author.send(`I am having a hard time finding that request! Because i am an AI on discord, i don't have time to process long requests.`).catch(err => {});
+        await message.author.send(response).catch((err) => {
+          message.author
+            .send(
+              `I am having a hard time finding that request! Because i am an AI on discord, i don't have time to process long requests.`
+            )
+            .catch((err) => {});
         });
       }
     } catch (e) {
       console.log(e);
-      message.author.send(`I am having a hard time finding that request! Because i am an AI on discord, i don't have time to process long requests.`).catch(err => {});
+      message.author
+        .send(
+          `I am having a hard time finding that request! Because i am an AI on discord, i don't have time to process long requests.`
+        )
+        .catch((err) => {});
     }
   } else {
     return;
   }
 });
+
+//Join To Create System
+const jointocreateSchema = require("./Schemas/jointocreateSchema");
+const jointocreatechannelSchema = require("./Schemas/jointocreateChannelSchema");
+client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
+  try {
+    if (newState.member.guild == null) return;
+  } catch (err) {
+    return;
+  }
+
+  const joindata = await jointocreateSchema.findOne({
+    Guild: newState.guild.id,
+  });
+  const joinchanneldata = await jointocreatechannelSchema.findOne({
+    Guild: newState.member.guild.id,
+    User: newState.member.id,
+  });
+  const voicechannel = newState.channel;
+
+  if (!joindata) return;
+  if (!voicechannel) return;
+  else {
+    if (voicechannel.id === joindata.Channel) {
+      if (joinchanneldata) {
+        try {
+          return await newState.member.send({
+            content: "You already have a voice channel.",
+          });
+        } catch (err) {
+          return;
+        }
+      } else {
+        try {
+          const channel = await newState.member.guild.channels.create({
+            type: ChannelType.Voice,
+            name: `${newState.member.user.username}-room`,
+            userLimit: joindate.VoiceLimit,
+            parent: joindata.Category,
+          });
+
+          try {
+            await newState.member.voice.setChannel(channel.id);
+          } catch (err) {
+            return;
+          }
+
+          setTimeout(() => {
+            jointocreatechannelSchema.create({
+              Guild: newState.member.guild.id,
+              Channel: channel.id,
+              User: newState.member.id,
+            });
+          }, 500);
+        } catch (err) {
+          return;
+        }
+      }
+      try {
+        const embed = new EmbedBuilder()
+          .setColor("Random")
+          .setDescription("Channel Created")
+          .addFields({
+            name: `Channel Created`,
+            value: `${newState.member.guild.name}`,
+          });
+
+        await newState.member.send({ embeds: [embed] });
+      } catch (err) {
+        return;
+      }
+    }
+  }
+});
+client.on(Events.VoiceStateUpdate, async(oldState, newState) => {
+  try {
+    if(oldState.member.guild === null) return;
+  } catch (err) {
+    return;
+  }
+
+  const leavechanneldata = await jointocreatechannelSchema.findOne({ Guild: oldState.member.guild.id, User: oldState.member.id });
+
+  if(!leavechanneldata) return;
+
+  else {
+    const voicechannel = await oldState.member.guild.channels.get(leavechanneldata.Channel);
+
+    try {
+      await voicechannel.delete();
+    } catch (err) {
+      return;
+    }
+
+    await jointocreatechannelSchema.deleteMany({ Guild: oldState. guild.id, User: oldState.member.id });
+
+    try {
+      const embed = new EmbedBuilder()
+        .setColor('Random')
+        .setDescription(`Join To Create`)
+        .addFields({ name: 'Channel Deleted', value: `${newState.member.guild.name}` })
+
+      await newState.member.send({ embeds: [embed] });
+    } catch (err) {
+      return;
+    }
+  }
+})

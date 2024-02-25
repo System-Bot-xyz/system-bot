@@ -42,8 +42,6 @@ const client = new Client({
 const { createTranscript } = require("discord-html-transcripts");
 const { startTyping } = require("./functions/startTyping");
 
-require("../server/server");
-
 client.commands = new Collection();
 client.prefix = new Map();
 

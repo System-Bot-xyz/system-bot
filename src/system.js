@@ -85,6 +85,9 @@ process.on("uncaughtExceptionMonitor", (err, origin) => {
   }
   client.handleEvents(eventFiles, "./src/events");
   client.handleCommands(commandFolders, "./src/commands");
+  client.pagination(functions, './src/functions/pagination');
+  client.youtubeCheck(functions, './src/functions/youtubeNotification');
+  client.startTyping(functions, './src/functions/startTyping');
   client.login(process.env.TOKEN);
 })();
 

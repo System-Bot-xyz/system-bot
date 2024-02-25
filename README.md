@@ -72,3 +72,25 @@ The project also provides an API for various functionalities, including:
 - Commands like list and count of available commands
 - Documentation for API versions
 The API is accessible through corresponding endpoints and offers documentation for easy integration.
+
+## Coming Soon Files (.txt)
+- allUsers
+- requestedCommands
+- broadcast
+- economy
+- boostevent
+- createevent
+- deleteevent
+- listevents
+- giveaway
+- playerstats
+- checknews
+- createnews
+- deletenews
+- listnews
+- setreportchannel
+- unbanrequest
+- wikipedia
+- transcode
+- help
+- voiceverify

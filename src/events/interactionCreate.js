@@ -34,11 +34,16 @@ module.exports = {
                 if(!check) return await interaction.reply({ content: `⚠ Only **moderator** can use this command!` });
             }
         }
+
+        //blacklist users system
+        const blacklistusersSchema = require('../Schemas/blacklistusersSchema');
+        const blacklistusers = await blacklistusersSchema.findOne({ User: interaction.user.id });
+        if(blacklistusers) return await interaction.reply({ content: `You have been **blacklisted** from using this bot! This means the developer doesn't want you to use its commands for any given reason.` });
         
         //block cmd
-        var data = await blockcmdSchema.find({ Guild: interaction.guild.id });
+        var blockcmd = await blockcmdSchema.find({ Guild: interaction.guild.id });
         var match = [];
-        await data.forEach(async value => {
+        await blockcmd.forEach(async value => {
             if(value.Command == interaction.commandName) return match.push(value);
         });
         if(match.length > 0){

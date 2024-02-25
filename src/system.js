@@ -425,6 +425,17 @@ client.on(Events.InteractionCreate, async (interaction) => {
   }
 });
 
+// Blacklist Server System
+const blacklistserverSchema = require('./Schemas/blacklistserverSchema');
+client.on(Events.GuildCreate, async guild => {
+  const data = await blacklistserverSchema.findOne({ Guild: guild.id });
+  
+  if(!data) return;
+  else {
+    await guild.leave();
+  }
+});
+
 // Ticket System
 const ticketSchema = require("./Schemas/ticketSchema");
 client.on(Events.InteractionCreate, async (interaction) => {

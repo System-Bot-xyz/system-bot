@@ -55,6 +55,7 @@
     "stream": "^0.0.2",
     "superagent": "^8.1.2",
     "tinyurl": "^1.1.7",
-    "translate-google": "^1.5.0"
+    "translate-google": "^1.5.0",
+    "weather-js": "^2.0.0"
   }
 }

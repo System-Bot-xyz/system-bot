@@ -5,8 +5,8 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('blacklist-server')
         .setDescription('Add a server to the blacklist.')
-        .addSubcommand(command => command.setName('add').setDescription('Add a server to the blacklist.').addStringOption(option => option.setName('server').setDescription('The server ID you want to blacklist.')).setRequired(true))
-        .addSubcommand(command => command.setName('remove').setDescription('Remove a server from the blacklist.').addStringOption(option => option.setName('server').setDescription('The server ID you want to remove from the blacklist.')).setRequired(true)),
+        .addSubcommand(command => command.setName('add').setDescription('Add a server to the blacklist.').addStringOption(option => option.setName('server').setDescription('The server ID you want to blacklist.').setRequired(true)))
+        .addSubcommand(command => command.setName('remove').setDescription('Remove a server from the blacklist.').addStringOption(option => option.setName('server').setDescription('The server ID you want to remove from the blacklist.').setRequired(true))),
     async execute(interaction){
         const { options } = interaction;
         if(interaction.user.id !== process.env.DEV_ID) return await interaction.reply({ content: `Only **developers** can use this command!` });
@@ -26,7 +26,7 @@ module.exports = {
                     setTimeout(async () => {
                         await interaction.editReply({ content: `**Indexing Servers...**`, ephemeral: true });
 
-                        const check = await clientInformation.guilds.cache.get(server);
+                        const check = await client.guilds.cache.get(server);
                         if(check){
                             await check.leave();
                             setTimeout(async () => {

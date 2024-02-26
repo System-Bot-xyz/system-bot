@@ -47,7 +47,6 @@ const client = new Client({
   ],
 });
 const { createTranscript } = require("discord-html-transcripts");
-const { startTyping } = require("./functions/startTyping");
 
 client.commands = new Collection();
 client.prefix = new Map();
@@ -92,7 +91,6 @@ process.on("uncaughtExceptionMonitor", (err, origin) => {
   client.handleCommands(commandFolders, "./src/commands");
   client.pagination(functions, './src/functions/pagination');
   client.youtubeCheck(functions, './src/functions/youtubeNotification');
-  client.startTyping(functions, './src/functions/startTyping');
   client.login(process.env.TOKEN);
 })();
 

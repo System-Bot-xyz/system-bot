@@ -6,7 +6,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('invite-logger')
         .setDescription('Set up the invite logger system.')
-        .addSubcommand(command => command.setName('setup').setDescription('Set up the invite logger system.').addChannelOption(option => option.setName('channel').setDescription('The channel you want to send the invite logging in.').setRequired(true).addChannelTypes(ChannelType.GuildText)))
+        .addSubcommand(command => command.setName('setup').setDescription('Set up the invite logger system.').addChannelOption(option => option.setName('channel').setDescription('The channel you want to send the invite logging in.').addChannelTypes(ChannelType.GuildText).setRequired(true)))
         .addSubcommand(command => command.setName('disable').setDescription('Set up the invite logger system.').setRequired(true)),
     async execute(interaction){
         if(!interaction.member.permissions.has(PermissionsBitField.Flags.Administrator)) return await interaction.reply({ content: `You dont have permissions to manage the invite logging system.` });

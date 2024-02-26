@@ -7,7 +7,7 @@ module.exports = {
         .addUserOption(option => option.setName('user').setDescription('The user you want to check the badges of.')),
     async execute(interaction){
         const { options } = interaction;
-        await interaction.deferReply();
+        await interaction.deferReply({ ephemeral: true });
 
         let user = options.getUser('user') || interaction.user;
         let member = await interaction.guild.members.cache.get(user.id);

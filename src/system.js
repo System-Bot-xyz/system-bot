@@ -9,6 +9,7 @@ const {
   Collection,
   Events,
   ChannelType,
+  MessageType,
   Partials,
   NewsChannel,
   ActionRowBuilder,
@@ -27,6 +28,12 @@ const client = new Client({
     GatewayIntentBits.GuildMessageReactions,
     GatewayIntentBits.GuildMembers,
     GatewayIntentBits.GuildVoiceStates,
+    GatewayIntentBits.GuildBans,
+    GatewayIntentBits.GuildEmojisAndStickers,
+    GatewayIntentBits.GuildIntegrations,
+    GatewayIntentBits.GuildWebhooks,
+    GatewayIntentBits.GuildInvites,
+    GatewayIntentBits.GuildPresences,
   ],
   partials: [
     Partials.Message,
@@ -110,6 +117,16 @@ client.on(Events.MessageCreate, async (message) => {
   if (prefixcmd) {
     prefixcmd.run(client, message, args);
   }
+});
+
+// Snipe
+client.snipes = new Map();
+client.on(Events.MessageDelete, function(message, channel){
+  client.snipes.set(message.channel.id, {
+    content: message.content,
+    author: message.author,
+    image: message.attachments.first() ? message.attachments.first().proxyURL : null
+  });
 });
 
 //Link Identifier
@@ -858,110 +875,96 @@ client.on(Events.MessageCreate, async (message) => {
   }
 });
 
-//Join To Create System
-const jointocreateSchema = require("./Schemas/jointocreateSchema");
-const jointocreatechannelSchema = require("./Schemas/jointocreateChannelSchema");
-client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
-  try {
-    if (newState.member.guild == null) return;
-  } catch (err) {
-    return;
-  }
-
-  const joindata = await jointocreateSchema.findOne({
-    Guild: newState.guild.id,
-  });
-  const joinchanneldata = await jointocreatechannelSchema.findOne({
-    Guild: newState.member.guild.id,
-    User: newState.member.id,
-  });
-  const voicechannel = newState.channel;
-
-  if (!joindata) return;
-  if (!voicechannel) return;
+// auto publish system
+const autopublishSchema = require('./Schemas/autopublishSchema');
+client.on(Events.MessageCreate, async message => {
+  if(message.channel.type !== ChannelType.GuildAnnouncement) return;
+  if(message.author.bot) return;
+  if(message.content.startsWith('.')) return;
   else {
-    if (voicechannel.id === joindata.Channel) {
-      if (joinchanneldata) {
-        try {
-          return await newState.member.send({
-            content: "You already have a voice channel.",
-          });
-        } catch (err) {
-          return;
-        }
-      } else {
-        try {
-          const channel = await newState.member.guild.channels.create({
-            type: ChannelType.Voice,
-            name: `${newState.member.user.username}-room`,
-            userLimit: joindate.VoiceLimit,
-            parent: joindata.Category,
-          });
+    const autopublish = await autopublishSchema.findOne({ Guild: message.guild.id });
+    if(!autopublish) return;
+    if(!autopublish.Channel.includes(message.channel.id)) return;
 
-          try {
-            await newState.member.voice.setChannel(channel.id);
-          } catch (err) {
-            return;
-          }
-
-          setTimeout(() => {
-            jointocreatechannelSchema.create({
-              Guild: newState.member.guild.id,
-              Channel: channel.id,
-              User: newState.member.id,
-            });
-          }, 500);
-        } catch (err) {
-          return;
-        }
-      }
-      try {
-        const embed = new EmbedBuilder()
-          .setColor("Random")
-          .setDescription("Channel Created")
-          .addFields({
-            name: `Channel Created`,
-            value: `${newState.member.guild.name}`,
-          });
-
-        await newState.member.send({ embeds: [embed] });
-      } catch (err) {
-        return;
-      }
+    try {
+      message.crosspost();
+    } catch (e) {
+      return;
     }
   }
 });
-client.on(Events.VoiceStateUpdate, async(oldState, newState) => {
-  try {
-    if(oldState.member.guild === null) return;
-  } catch (err) {
-    return;
-  }
 
-  const leavechanneldata = await jointocreatechannelSchema.findOne({ Guild: oldState.member.guild.id, User: oldState.member.id });
+// Ghost Ping System
+const ghostpingSchema = require('./Schemas/ghostpingSchema');
+const ghostnumSchema = require('./Schemas/ghostnumSchema');
+client.on(Events.MessageDelete, async message => {
+  const ghostping = await ghostpingSchema.findOne({ Guild: message.guild.id });
+  if(!ghostping) return;
+  if(message.author.bot) return;
+  if(!message.author.id === client.user.id) return;
+  if(message.author === message.mentions.users.first()) return;
 
-  if(!leavechanneldata) return;
+  if(message.mentions.users.first() || message.type === MessageType.reply){
+    let number;
+    let time = 15;
 
-  else {
-    const voicechannel = await oldState.member.guild.channels.get(leavechanneldata.Channel);
-
-    try {
-      await voicechannel.delete();
-    } catch (err) {
-      return;
+    const ghostnum = await ghostnumSchema.findOne({ Guild: message.guild.id, User: message.author.id });
+    if(!ghostnum){
+      await ghostnumSchema.create({
+        Guild: message.guild.id,
+        User: message.author.id,
+        Number: 1
+      });
+      number = 1;
+    } else {
+      ghostnum.Number += 1;
+      await ghostnum.save();
+      number = ghostnum.Number;
     }
 
-    await jointocreatechannelSchema.deleteMany({ Guild: oldState. guild.id, User: oldState.member.id });
+    if(number == 2) time = 60;
+    if(number >= 3) time = 300;
 
-    try {
-      const embed = new EmbedBuilder()
-        .setColor('Random')
-        .setDescription(`Join To Create`)
-        .addFields({ name: 'Channel Deleted', value: `${newState.member.guild.name}` })
+    const ghostmsg = await message.channel.send({ content: `${message.author}, you cannot ghost ping members within this server!` });
+    setTimeout(() => ghostmsg.delete(), 5000);
 
-      await newState.member.send({ embeds: [embed] });
-    } catch (err) {
+    const member = message.member;
+
+    if(message.member.permissions.has(PermissionsBitField.Flags.Administrator)){
       return;
+    } else {
+      await member.timeout(time * 1000, 'Ghost pinging')
+      await member.send({ content: `You have been timed out in ${message.guild.name} for ${time} seconds due to ghost pinging members.` }).catch(err => {
+        return;
+      });
     }
   }
-})
+});
+
+// Invite Logger System
+const inviteSchema = require('./Schemas/inviteSchema');
+const invites = new Collection()
+const wait = require('timers/promises').setTimeout;
+client.on('ready', async () =>{
+  await wait(2000);
+  client.guilds.cache.forEach(async (guild) => {
+    const clientMember = guild.members.cache.get(client.user.id);
+    if(!clientMember.permissions.has(PermissionsBitField.Flags.ManageGuild)) return;
+    const firstInvites = await guild.invites.fetch().catch(err => {console.log(err)})
+    invites.set(guild.id, new Collection(firstInvites.map((invite) => [invite.code, invite.uses])));
+  })
+});
+client.on(Events.GuildMemberAdd, async member => {
+  const invitelogger = await inviteSchema.findOne({ Guild: member.guild.id });
+  if(!invitelogger) return;
+  const channelID = invitelogger.Channel;
+  const channel = await member.guild.channels.cache.get(channelID);
+  const newInvites = await member.guild.invites.fetch();
+  const oldInvites = invites.get(member.guild.id);
+  const invite = newInvites.find(i => i.uses > oldInvites.get(i.code));
+  const inviter = await client.users.fetch(invite.inviter.id);
+
+  inviter
+    ? channel.send(`${member.user.tag} joined the server using the invite ${invite.code} from ${inviter.tag}. The invite was used ${invite.uses} times since its creation.`)
+    : channel.send(`${member.user.tag} joined the server but i cant find what invite they used to do it.`)
+});

@@ -1,4 +1,5 @@
 const { PermissionsBitField } = require('discord.js');
+const axios = require('axios');
 const modroleSchema = require('../Schemas/modroleSchema');
 const blockcmdSchema = require('../Schemas/blockcmdSchema');
 
@@ -9,9 +10,42 @@ module.exports = {
 
         const command = client.commands.get(interaction.commandName);
 
+        //Return Command
+        if (!command) return
+
         //owner command
         if(command.owner == true){
             if(interaction.user.id !== process.env.DEV_ID) return await interaction.reply({ content: `You cant use this command.` });
+        }
+
+        //premium filter
+        if(command.premium == true){
+            const response = await axios.get(`https://discord.com/api/v10/applications/${process.env.CLIENT_ID}/entitlements`, {
+                headers: {
+                    'Authorization': `Bot ${process.env.TOKEN}`,
+                }
+            });
+            var server;
+            await response.data.forEach(async data => {
+                let guildId = data.guild_id;
+                if(guildId == interaction.guild.id){
+                    server = 'premium';
+                }
+            });
+            if(server != 'premium'){
+                const url = `https://discord.com/api/v10/interactions/${interaction.id}/${interaction.token}/callback`;
+                const json = {
+                    type: 10,
+                    data: {},
+                };
+                return await fetch(url, {
+                    method: 'POST',
+                    body: JSON.stringify(json),
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+            }
         }
 
         //Administrator command
@@ -49,9 +83,6 @@ module.exports = {
         if(match.length > 0){
             return await interaction.reply({ content: `⚠ Sorry! Looks like this server has this command **blocked from use!**` });
         }
-
-        //Return Command
-        if (!command) return
         
         try{
             await command.execute(interaction, client);

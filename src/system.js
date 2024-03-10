@@ -966,3 +966,113 @@ client.on(Events.GuildMemberAdd, async member => {
     ? channel.send(`${member.user.tag} joined the server using the invite ${invite.code} from ${inviter.tag}. The invite was used ${invite.uses} times since its creation.`)
     : channel.send(`${member.user.tag} joined the server but i cant find what invite they used to do it.`)
 });
+
+// Join To Create System
+const joinschema = require('./Schemas/jointocreateSchema');
+const joinchannelschema = require('./Schemas/jointocreatechannelsSchema');
+client.on(Events.VoiceStateUpdate, async(oldState, newState) => {
+  try {
+    if(newState.member.guild === null) return;
+  } catch (err) {
+    return;
+  }
+
+  const joindata = await joinschema.findOne({ Guild: newState.guild.id });
+  const joinchanneldata = await joinchannelschema.findOne({ Guild: newState.member.guild.id, User: newState.member.id });
+
+  const voicechannel = newState.channel;
+
+  if(!joindata) return;
+
+  if(!voicechannel) return;
+  else {
+    if(voicechannel.id === joindata.Channel){
+      if(joinchanneldata){
+        try {
+          return await newState.member.send({ content: `You already have a voice channel open right now!` });
+        } catch (err) {
+          return;
+        }
+      } else {
+        try {
+          const channel = await newState.member.guild.channels.create({
+            type: ChannelType.GuildVoice,
+            name: `${newState.member.user.username}-room`,
+            userLimit: joindata.VoiceLimit,
+            parent: joindata.Category
+          });
+  
+          try {
+            await newState.member.voice.setChannel(channel.id);
+          } catch (err) {
+            return;
+          }
+  
+          setTimeout(() => {
+            joinchannelschema.create({
+              Guild: newState.member.guild.id,
+              Channel: channel.id,
+              User: newState.member.id
+            }, 500)
+          });
+        } catch (err) {
+          try {
+            await newState.member.send({ content: `I could not create your channel, i may be missing permissions.` });
+          } catch (err) {
+            return;
+          }
+  
+          return;
+        }
+  
+        try {
+          const embed = new EmbedBuilder()
+            .setColor('Random')
+            .setAuthor({ name: `Join To Create System` })
+            .setTitle('> Channel Created')
+            .addFields({ name: 'Channel Created', value: `> Your voice channel has been\n>created in **${newState.member.guild.name}**.`})
+            .setFooter({ text: `Channel Created` })
+            .setTimestamp();
+  
+          await newState.member.send({ embeds: [embed] });
+        } catch (err) {
+          return;
+        }
+      }
+    }
+  }
+});
+client.on(Events.VoiceStateUpdate, async(oldState, newState) => {
+  try {
+    if(oldState.member.guild === null) return;
+  } catch (err) {
+    return;
+  }
+
+  const leavechanneldata = await joinchannelschema.findOne({ Guild: oldState.member.guild.id, User: oldState.member.id });
+  if(!leavechanneldata) return;
+  else {
+    const voicechannel = await oldState.member.guild.channels.cache.get(leavechanneldata.Channel);
+
+    try {
+      await voicechannel.delete();
+    } catch (err) {
+      return;
+    }
+
+    await joinchannelschema.deleteMany({ Guild: oldState.guild.id, User: oldState.member.id });
+    try {
+      const embed = new EmbedBuilder()
+        .setColor('Random')
+        .setTimestamp()
+        .setAuthor({ name: `Join To Create System` })
+        .setFooter({ text: `Channel Delete` })
+        .setTitle('> Channel Delete')
+        .addFields({ name: 'Channel Deleted', value: `> Your voice channel has been\n>deleted in **${newState.member.guild.name}**.` });
+
+      await newState.member.send({ embeds: [embed] });
+    } catch (err) {
+      return;
+    }
+  }
+});

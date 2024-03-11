@@ -69,9 +69,11 @@ for (arx of prefixFolders) {
   client.prefix.set(Cmd.name, Cmd);
 }
 
-// Anti crash system
+// Moderation Logging System & Anti crash system
+const Logs = require('discord-logs');
 const process = require("node:process");
 const internal = require("stream");
+
 process.on("unhandledRejection", async (reason, promise) => {
   console.log("Unhandled Rejection at:", promise, "reason:", reason);
 });
@@ -81,6 +83,12 @@ process.on("uncaughtException", (err) => {
 process.on("uncaughtExceptionMonitor", (err, origin) => {
   console.log("Uncaught Exception Monitor", err, origin);
 });
+
+Logs(client, {
+  debug: true
+});
+
+const {handleLogs} = require('./events/handleLogs');
 
 // Async Bot Login
 (async () => {
@@ -711,8 +719,8 @@ client.on(Events.InteractionCreate, async (interaction) => {
       .setTitle(`Bug Report from ${interaction.user.displayName}!`)
       .addFields({ name: "Thema", value: `${customId}` })
       .addFields({
-        name: "Displayname / Tagged Name / Username / ID",
-        value: `${interaction.user.displayName} / ${member} / ${interaction.user.username} / ||${id}||`,
+        name: "Displayname / ID",
+        value: `${interaction.user.displayName} ||${id}||`,
       })
       .addFields({
         name: "Server Name / ID",
@@ -1075,4 +1083,55 @@ client.on(Events.VoiceStateUpdate, async(oldState, newState) => {
       return;
     }
   }
+});
+
+//counting system
+const counting = require('./Schemas/countingSchema');
+client.on(Events.MessageCreate, async message => {
+  if(!message.guild) return;
+  if(message.author.bot) return;
+
+  const countingdata = await counting.findOne({ Guild: message.guild.id });
+  if(!countingdata) return;
+  else {
+    if(message.channel.id !== countingdata.Channel) return;
+    const number = Number(message.content);
+
+    if(number !== data.Number){
+      return message.react('❌');
+    } else if(countingdata.LastUser === message.author.id){
+      message.react('❌');
+      const msg = await message.reply(`❌ Someone else has to count that number!`);
+
+      setTimeout(async() => {
+        await msg.delete();
+      }, 5000);
+    } else {
+      await message.react('☑️');
+
+      countingdata.LastUser = message.author.id;
+      countingdata.Number++;
+      await countingdata.save();
+    }
+  }
+});
+
+// Giveaway System
+const GiveawaysManager = require('./functions/giveawaysManager');
+client.giveawayManager = new GiveawaysManager(client, {
+  default: {
+    botsCanWin: false,
+    embedColor: `Random`,
+    embedColorEnd: 'Random',
+    reaction: '🎉',
+  },
+});
+
+// Join Role System
+const joinroleSchema = require('./Schemas/joinroleSchema');
+client.on(Events.GuildMemberAdd, async(member, guild) => {
+  const role = await joinroleSchema.findOne({ Guild: member.guild.id });
+  if(!role) return;
+  const giverole = member.guild.roles.cache.get(role.RoleID);
+  member.roles.add(giverole);
 });

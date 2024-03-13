@@ -3,7 +3,7 @@ const giveawaySchema = require('../Schemas/giveawaySchema');
 
 module.exports = class GiveawaysManager extends gw {
     async getAllGiveaways(){
-        return await giveawaySchema.find().lean().exec();
+        return await giveawaySchema.findOne().lean().exec();
     }
 
     async saveGiveaway(messageId, giveawayData){

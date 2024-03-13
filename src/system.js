@@ -96,7 +96,9 @@ const {handleLogs} = require('./events/handleLogs');
     require(`./functions/${file}`)(client);
   }
   client.handleEvents(eventFiles, "./src/events");
+  client.handleLogs(eventFiles, './events/handleLogs');
   client.handleCommands(commandFolders, "./src/commands");
+  client.giveawaysManager(functions, './src/functions/giveawaysManager');
   client.pagination(functions, './src/functions/pagination');
   client.youtubeCheck(functions, './src/functions/youtubeNotification');
   client.login(process.env.TOKEN);

@@ -3,7 +3,7 @@ const axios = require('axios');
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('ytmp3')
+        .setName('yt-mp3')
         .setDescription('Download the mp3 of a youtube video.')
         .addStringOption(option => option.setName('video-id').setDescription('The ID of your video.').setRequired(true)),
     async execute(interaction){

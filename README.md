@@ -73,24 +73,30 @@ The project also provides an API for various functionalities, including:
 - Documentation for API versions
 The API is accessible through corresponding endpoints and offers documentation for easy integration.
 
+
 ## Coming Soon Files (.txt)
-- allUsers
-- requestedCommands
-- broadcast
-- economy
-- boostevent
-- createevent
-- deleteevent
-- listevents
-- giveaway
-- playerstats
-- checknews
-- createnews
-- deletenews
-- listnews
-- setreportchannel
-- unbanrequest
-- wikipedia
-- transcode
-- help
-- voiceverify
+- allUsers.txt
+- requestedCommands.txt
+- broadcast.txt
+- boostevent.txt
+- createevent.txt
+- deleteevent.txt
+- listevents.txt
+- playerstats.txt
+- leave.txt
+- play.txt
+- playlist.txt
+- remove.txt
+- restart.txt
+- show.txt
+- stop.txt
+- checknews.txt
+- createnews.txt
+- deletenews.txt
+- listnews.txt
+- setreportchannel.txt
+- deletereportchannel.txt
+- unbanrequest.txt
+- transcode.txt
+- help.txt
+- ${prefix}help.txt

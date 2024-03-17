@@ -4,7 +4,7 @@ const axios = require('axios');
 module.exports = {
     owner: true,
     data: new SlashCommandBuilder()
-        .setName('sheetdb')
+        .setName('sheet-db')
         .setDescription('Create a google sheet.')
         .addStringOption(option => option.setName('name').setDescription('The name').setRequired(true))
         .addStringOption(option => option.setName('age').setDescription('The age').setRequired(true))

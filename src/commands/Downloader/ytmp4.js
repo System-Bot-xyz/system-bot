@@ -3,7 +3,7 @@ const axios = require('axios');
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('ytmp4')
+        .setName('yt-mp4')
         .setDescription('Download a youtube video.')
         .addStringOption(option => option.setName('video-id').setDescription('The youtube video ID to download.').setRequired(true)),
     async execute(interaction){
